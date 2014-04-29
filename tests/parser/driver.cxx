@@ -84,6 +84,17 @@ main ()
     // cerr << e.what () << endl;
   }
 
+  // Test value extraction.
+  //
+  {
+    istringstream is ("<root>123</root>");
+    parser p (is, "test");
+    p.next_expect (parser::start_element, "root");
+    p.next_expect (parser::characters);
+    assert (p.value<int> () == 123);
+    p.next_expect (parser::end_element);
+  }
+
   // Test attribute maps.
   //
   {

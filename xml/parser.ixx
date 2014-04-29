@@ -6,6 +6,13 @@
 
 namespace xml
 {
+  template <typename T>
+  inline T parser::
+  value () const
+  {
+    return value_traits<T>::parse (value (), *this);
+  }
+
   inline const std::string& parser::
   attribute (const std::string& n) const
   {

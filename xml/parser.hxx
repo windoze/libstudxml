@@ -208,6 +208,7 @@ namespace xml
     const std::string& prefix () const {return pqname_->prefix ();}
 
     const std::string& value () const {return *pvalue_;}
+    template <typename T> T value () const;
 
     unsigned long long line () const {return line_;}
     unsigned long long column () const {return column_;}
