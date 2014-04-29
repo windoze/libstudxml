@@ -1,0 +1,20 @@
+libstudxml is a C++ XML library. It provides parsing and serialization
+APIs that were specifically designed for C++ and based on typical C++
+application needs when it comes to XML. For more information see:
+
+http://www.codesynthesis.com/projects/libstudxml/
+
+See the NEWS file for the user-visible changes from the previous release.
+
+See the LICENSE file for distribution conditions.
+
+See the INSTALL file for prerequisites and installation instructions.
+
+See the doc/ directory for the API documentation.
+
+See the examples/ directory for examples.
+
+See the tests/ directory for the test suite.
+
+Send questions, bug reports, or any other feedback to the
+studxml-users@codesynthesis.com mailing list.

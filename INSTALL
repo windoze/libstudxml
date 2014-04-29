@@ -1,0 +1,86 @@
+Building on UNIX
+================
+
+The following build instructions are for the Linux/UNIX/Mac OS X
+operating systems as well as for Cygwin and MinGW on Windows.
+
+The standard autotools-based build system is used on these platforms. After
+unpacking the source code archive, change to the libstudxml package directory
+(referred to as libstudxml/ from now on) and run the configure script:
+
+./configure
+
+To see the available configuration options run configure with --help:
+
+./configure --help
+
+As an example, the following configure command only builds shared libraries,
+uses the specified C++ compiler, and compiles with optimization and without
+debug information:
+
+./configure --disable-static CXX=g++-4.9 CXXFLAGS=-O3
+
+One configure option worth mentioning is --with-extern-expat. It makes
+libstudxml use an external Expat library rather than bulding-in the
+internal version.
+
+Once configuration is complete, run make to build libstudxml:
+
+make
+
+Once the build is completed successfully you can run the tests using
+the check target:
+
+make check
+
+You can also install the libstudxml headers and libraries using the
+install target (you may need to do this step as root depending on the
+installation directory):
+
+make install
+
+
+Building on Windows
+===================
+
+The following build instructions are for Windows using Microsoft Visual
+Studio. If you would like to build libstudxml with GCC either using Cygwin
+or MinGW, refer to the "Building on UNIX" section above.
+
+The standard Visual Studio project and solution files are used on this
+platform. To build the libstudxml library, unpack the source code archive
+and open the libstudxml-vc<N>.sln file located in the libstudxml package
+directory (referred to as libstudxml\ from now on). Here <N> is the version
+of Visual Studio that you are using. Once the solution is open, select
+the desired build configuration (Debug or Release) and platform (Win32
+or x64) and build the solution.
+
+The resulting 32-bit DLLs and import libraries are placed into the
+libstudxml\bin\ and libstudxml\lib\ directories, respectively. Similarly,
+the 64-bit DLLs and import libraries are placed into libstudxml\bin64\
+and libstudxml\lib64\. The Release versions of the import libraries are
+named studxml.lib and the Debug versions are named studxml-d.lib.
+
+To configure Visual Studio to automatically locate the libstudxml headers,
+DLLs, and import libraries, add the following paths to your VC++
+Directories:
+
+Win32:
+
+  Include:    ...\libstudxml
+  Library:    ...\libstudxml\lib
+  Executable: ...\libstudxml\bin
+
+x64:
+
+  Include:    ...\libstudxml
+  Library:    ...\libstudxml\lib64
+  Executable: ...\libstudxml\bin64
+
+If you would like to build the libstudxml examples, also open and build
+the solution in the examples/ subdirectory. Similarly, to built the tests,
+open and build the solution in the tests/ subdirectory.
+
+While you can run the tests and examples manually, it is also possible
+to run all the tests and all the examples automatically using the test.bat
+batch files located in the examples\ and tests\ directories.
