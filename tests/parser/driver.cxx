@@ -84,6 +84,24 @@ main ()
     // cerr << e.what () << endl;
   }
 
+  // Test namespace declarations.
+  //
+  {
+    // Followup end element event that should be precedeeded by end
+    // namespace declaration.
+    //
+    istringstream is ("<root xmlns:a='a'/>");
+    parser p (is,
+              "test",
+              parser::receive_default |
+              parser::receive_namespace_decls);
+
+    p.next_expect (parser::start_element, "root");
+    p.next_expect (parser::start_namespace_decl);
+    p.next_expect (parser::end_namespace_decl);
+    p.next_expect (parser::end_element);
+  }
+
   // Test value extraction.
   //
   {
@@ -261,6 +279,45 @@ main ()
     assert (p.next () == parser::start_element);
     p.content (parser::simple);
     assert (p.next () == parser::characters && p.value () == " ? ");
+    p.next ();
+    assert (false);
+  }
+  catch (const xml::exception&)
+  {
+    // cerr << e.what () << endl;
+  }
+
+  {
+    // Test content accumulation in simple content.
+    //
+    istringstream is ("<root xmlns:a='a'>1&#x32;3</root>");
+    parser p (is,
+              "simple",
+              parser::receive_default |
+              parser::receive_namespace_decls);
+
+    assert (p.next () == parser::start_element);
+    p.next_expect (parser::start_namespace_decl);
+    p.content (parser::simple);
+    assert (p.next () == parser::characters && p.value () == "123");
+    p.next_expect (parser::end_namespace_decl);
+    assert (p.next () == parser::end_element);
+    assert (p.next () == parser::eof);
+  }
+
+  try
+  {
+    // Test error handling in accumulation in simple content.
+    //
+    istringstream is ("<root xmlns:a='a'>1&#x32;<nested/>3</root>");
+    parser p (is,
+              "simple",
+              parser::receive_default |
+              parser::receive_namespace_decls);
+
+    assert (p.next () == parser::start_element);
+    p.next_expect (parser::start_namespace_decl);
+    p.content (parser::simple);
     p.next ();
     assert (false);
   }

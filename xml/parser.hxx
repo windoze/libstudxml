@@ -128,7 +128,7 @@ namespace xml
     event_type
     next ()
     {
-      // Move to .ixx.
+      //@@ Move to .ixx.
 
       if (state_ == state_next)
         return next_ (false);
@@ -279,9 +279,9 @@ namespace xml
     public:
     enum content_type
     {
-      //  element   characters  whitespaces
+               //  element   characters  whitespaces        notes
       empty,   //    no          no        ignored
-      simple,  //    no          yes       preserved
+      simple,  //    no          yes       preserved   content accumulated
       complex, //    yes         no        ignored
       mixed    //    yes         yes       preserved
     };
@@ -345,6 +345,7 @@ namespace xml
 
     XML_Parser p_;
     std::size_t depth_;
+    bool accumulate_; // Whether we are accumulating character content.
     enum {state_next, state_peek} state_;
     event_type event_;
     event_type queue_;

@@ -134,12 +134,15 @@ namespace xml
 
     if (e == XML_ERROR_ABORTED)
     {
-      // For now we only abort the parser in the characters_() handler.
+      // For now we only abort the parser in the characters_() and
+      // start_element_() handlers.
       //
       switch (content ())
       {
       case empty:
         throw parsing (*this, "character in empty content");
+      case simple:
+        throw parsing (*this, "element in simple content");
       case complex:
         throw parsing (*this, "character in complex content");
       default:
@@ -495,8 +498,16 @@ namespace xml
     {
       event_ = queue_;
       queue_ = eof;
+
+      line_ = XML_GetCurrentLineNumber (p_);
+      column_ = XML_GetCurrentColumnNumber (p_);
+
       return event_;
     }
+
+    // Reset the character accumulation flag.
+    //
+    accumulate_ = false;
 
     XML_ParsingStatus ps;
     XML_GetParsingStatus (p_, &ps);
@@ -630,6 +641,21 @@ namespace xml
     //
     assert (ps.parsing == XML_PARSING);
 
+    // When accumulating characters in simple content, we expect to
+    // see more characters or end element. Seeing start element is
+    // possible but means violation of the content model.
+    //
+    if (p.accumulate_)
+    {
+      // It would have been easier to throw the exception directly,
+      // however, the Expat code is most likely not exception safe.
+      //
+      p.line_ = XML_GetCurrentLineNumber (p.p_);
+      p.column_ = XML_GetCurrentColumnNumber (p.p_);
+      XML_StopParser (p.p_, false);
+      return;
+    }
+
     p.event_ = start_element;
     split_name (name, p.qname_);
 
@@ -702,23 +728,19 @@ namespace xml
       p.queue_ = end_element;
     else
     {
-      // We may also have the end namespace declaration events which
-      // should come before the end element. If that's the case, then
-      // queue the end element and return the end namespace as the next
-      // event.
-      //
-      if (p.end_ns_i_ < p.end_ns_.size ())
-      {
-        p.event_ = end_namespace_decl;
-        p.queue_ = end_element;
-      }
-      else
-        p.event_ = end_element;
-
       split_name (name, p.qname_);
 
-      p.line_ = XML_GetCurrentLineNumber (p.p_);
-      p.column_ = XML_GetCurrentColumnNumber (p.p_);
+      // If we are accumulating characters, then queue this event.
+      //
+      if (p.accumulate_)
+        p.queue_ = end_element;
+      else
+      {
+        p.event_ = end_element;
+
+        p.line_ = XML_GetCurrentLineNumber (p.p_);
+        p.column_ = XML_GetCurrentColumnNumber (p.p_);
+      }
 
       XML_StopParser (p.p_, true);
     }
@@ -738,9 +760,11 @@ namespace xml
     if (ps.parsing == XML_FINISHED)
       return;
 
+    content_type cont (p.content ());
+
     // If this is empty or complex content, see if these are whitespaces.
     //
-    switch (p.content ())
+    switch (cont)
     {
     case empty:
     case complex:
@@ -765,10 +789,11 @@ namespace xml
       break;
     }
 
-    // This can be a followup event for another character event. In
-    // this case simply append the data.
+    // Append the characters if we are accumulating. This can also be a
+    // followup event for another character event. In this case also
+    // append the data.
     //
-    if (ps.parsing != XML_PARSING)
+    if (p.accumulate_ || ps.parsing != XML_PARSING)
     {
       assert (p.event_ == characters);
       p.value_.append (s, n);
@@ -781,7 +806,14 @@ namespace xml
       p.line_ = XML_GetCurrentLineNumber (p.p_);
       p.column_ = XML_GetCurrentColumnNumber (p.p_);
 
-      XML_StopParser (p.p_, true);
+      // In simple content we need to accumulate all the characters
+      // into a single event. To do this we will let the parser run
+      // until we reach the end of the element.
+      //
+      if (cont == simple)
+        p.accumulate_ = true;
+      else
+        XML_StopParser (p.p_, true);
     }
   }
 
