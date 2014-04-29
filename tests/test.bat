@@ -1,6 +1,6 @@
 @echo off
 rem file      : tests/test.bat
-rem copyright : Copyright (c) 2009-2013 Code Synthesis Tools CC
+rem copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 rem license   : MIT; see accompanying LICENSE file
 
 setlocal

@@ -1,5 +1,5 @@
 # file      : build/import/libstudxml/configuration-rules.make
-# copyright : Copyright (c) 2009-2013 Code Synthesis Tools CC
+# copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 # license   : MIT; see accompanying LICENSE file
 
 $(dcf_root)/import/libstudxml/configuration-dynamic.make: | $(dcf_root)/import/libstudxml/.

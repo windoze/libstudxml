@@ -1,5 +1,5 @@
 # file      : configure.ac
-# copyright : Copyright (c) 2009-2013 Code Synthesis Tools CC
+# copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 # license   : MIT; see accompanying LICENSE file
 
 AC_PREREQ(2.60)

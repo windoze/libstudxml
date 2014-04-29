@@ -1,5 +1,5 @@
 # file      : xml/Makefile.am
-# copyright : Copyright (c) 2009-2013 Code Synthesis Tools CC
+# copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 # license   : MIT; see accompanying LICENSE file
 
 EXTRA_DIST = __file__(extra_dist)
