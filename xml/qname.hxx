@@ -5,6 +5,8 @@
 #ifndef XML_QNAME_HXX
 #define XML_QNAME_HXX
 
+#include <xml/details/pre.hxx>
+
 #include <string>
 #include <iosfwd>
 
@@ -74,5 +76,7 @@ namespace xml
   std::ostream&
   operator<< (std::ostream&, const qname&);
 }
+
+#include <xml/details/post.hxx>
 
 #endif // XML_QNAME_HXX

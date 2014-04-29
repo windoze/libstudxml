@@ -5,6 +5,8 @@
 #ifndef XML_SERIALIZER_HXX
 #define XML_SERIALIZER_HXX
 
+#include <xml/details/pre.hxx>
+
 #include <string>
 #include <ostream>
 #include <cstddef> // std::size_t
@@ -176,5 +178,7 @@ namespace xml
 }
 
 #include <xml/serializer.ixx>
+
+#include <xml/details/post.hxx>
 
 #endif // XML_SERIALIZER_HXX

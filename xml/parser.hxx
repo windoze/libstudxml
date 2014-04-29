@@ -5,6 +5,8 @@
 #ifndef XML_PARSER_HXX
 #define XML_PARSER_HXX
 
+#include <xml/details/pre.hxx>
+
 #include <map>
 #include <vector>
 #include <string>
@@ -418,5 +420,7 @@ namespace xml
 
 #include <xml/parser.ixx>
 #include <xml/parser.txx>
+
+#include <xml/details/post.hxx>
 
 #endif // XML_PARSER_HXX

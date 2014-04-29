@@ -5,6 +5,8 @@
 #ifndef XML_VALUE_TRAITS_HXX
 #define XML_VALUE_TRAITS_HXX
 
+#include <xml/details/pre.hxx>
+
 #include <string>
 #include <cstddef> // std::size_t
 
@@ -47,5 +49,7 @@ namespace xml
 }
 
 #include <xml/value-traits.txx>
+
+#include <xml/details/post.hxx>
 
 #endif // XML_VALUE_TRAITS_HXX
