@@ -1,0 +1,15 @@
+# file      : libstudxml.pc.in
+# copyright : Copyright (c) 2009-2013 Code Synthesis Tools CC
+# license   : MIT; see accompanying LICENSE file
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libstudxml
+Description: C++ XML library
+URL: http://www.codesynthesis.com/projects/libstudxml/
+Version: @VERSION@
+Libs: -L${libdir} -lstudxml
+Cflags: -I${includedir}

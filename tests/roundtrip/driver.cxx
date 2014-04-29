@@ -113,7 +113,7 @@ main (int argc, char* argv[])
       }
     }
   }
-  catch (const ios_base::failure& e)
+  catch (const ios_base::failure&)
   {
     cerr << "io failure" << endl;
     return 1;

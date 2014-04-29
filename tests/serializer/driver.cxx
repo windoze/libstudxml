@@ -2,6 +2,10 @@
 // copyright : Copyright (c) 2009-2013 Code Synthesis Tools CC
 // license   : MIT; see accompanying LICENSE file
 
+#ifdef NDEBUG
+#  error tests require enabled assert(); un-define the NDEBUG macro
+#endif
+
 #include <string>
 #include <cassert>
 #include <iostream>
@@ -25,7 +29,7 @@ main ()
     s.attribute ("foo", "bar");
     assert (false);
   }
-  catch (const xml::exception& e)
+  catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
   }
@@ -42,7 +46,7 @@ main ()
     s.characters ("two");
     assert (false);
   }
-  catch (const ios_base::failure& e)
+  catch (const ios_base::failure&)
   {
   }
 

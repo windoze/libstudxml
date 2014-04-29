@@ -81,7 +81,8 @@ $(dist): export headers := $(subst $(src_base)/,,$(shell find $(src_base) \
 -name '*.hxx' -o -name '*.ixx' -o -name '*.txx'))
 $(dist): data_dist := details/config-vc.h $(expat_dist) $(genx_dist)
 $(dist): export extra_dist := $(data_dist) libstudxml-vc9.vcproj \
-libstudxml-vc10.vcxproj libstudxml-vc10.vcxproj.filters
+libstudxml-vc10.vcxproj libstudxml-vc10.vcxproj.filters \
+libstudxml-vc11.vcxproj libstudxml-vc11.vcxproj.filters
 $(dist): export interface_version = $(shell sed -e \
 's/^\([0-9]*\.[0-9]*\).*/\1/' $(src_root)/version)
 
@@ -91,6 +92,7 @@ $(dist):
 	$(call dist-data,$(data_dist) details/config.h.in)
 	$(call meta-vc9proj,libstudxml-vc9.vcproj)
 	$(call meta-vc10proj,libstudxml-vc10.vcxproj)
+	$(call meta-vc10proj,libstudxml-vc11.vcxproj)
 	$(call meta-automake)
 
 # Clean.
@@ -120,6 +122,7 @@ $(call include,$(bld_root)/dist.make)
 $(call include,$(bld_root)/install.make)
 $(call include,$(bld_root)/meta/vc9proj.make)
 $(call include,$(bld_root)/meta/vc10proj.make)
+$(call include,$(bld_root)/meta/vc11proj.make)
 $(call include,$(bld_root)/meta/automake.make)
 
 $(call include,$(bld_root)/c/c-o.make)

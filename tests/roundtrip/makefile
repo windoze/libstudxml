@@ -6,6 +6,13 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../build/bootstrap.make
 
 cxx_tun := driver.cxx
 
+tests :=       \
+attribute.xml  \
+namespace.xml  \
+followup-1.xml \
+followup-2.xml \
+characters.xml
+
 #
 #
 cxx_obj  := $(addprefix $(out_base)/,$(cxx_tun:.cxx=.o))
@@ -16,6 +23,7 @@ studxml.l.cpp-options := $(out_root)/xml/studxml.l.cpp-options
 
 driver   := $(out_base)/driver
 test     := $(out_base)/.test
+dist     := $(out_base)/.dist
 clean    := $(out_base)/.clean
 
 # Build.
@@ -23,20 +31,31 @@ clean    := $(out_base)/.clean
 $(driver): $(cxx_obj) $(studxml.l)
 $(cxx_obj) $(cxx_od): $(studxml.l.cpp-options)
 
-
 $(call include-dep,$(cxx_od))
-
 
 # Alias for default target.
 #
 $(out_base)/: $(driver)
 
 
+# Dist
+#
+$(dist): name := $(subst $(src_root)/tests/,,$(src_base))
+$(dist): sources := $(cxx_tun)
+$(dist): extras := $(tests)
+$(dist): export extra_dist := $(extras) $(name)-vc9.vcproj \
+$(name)-vc10.vcxproj $(name)-vc10.vcxproj.filters \
+$(name)-vc11.vcxproj $(name)-vc11.vcxproj.filters
+$(dist):
+	$(call dist-data,$(sources) $(extras))
+	$(call meta-automake,../template/Makefile.am)
+	$(call meta-vc9proj,../template/template-vc9.vcproj,$(name)-vc9.vcproj)
+	$(call meta-vc10proj,../template/template-vc10.vcxproj,$(name)-vc10.vcxproj)
+	$(call meta-vc11proj,../template/template-vc11.vcxproj,$(name)-vc11.vcxproj)
+
 # Test.
 #
-$(test): tests := attribute.xml namespace.xml followup-1.xml followup-2.xml \
-characters.xml
-
+$(test): tests := $(tests)
 $(test): test_body = $(call message,test $< $1,$< $(src_base)/$1 >$(out_base)/test.out)$(literal_newline)\
 $(literal_tab)$(call message,,diff -u $(src_base)/$1 $(out_base)/test.out)$(literal_newline)\
 $(literal_tab)$(call message,,rm -f $(out_base)/test.out)$(literal_newline)
@@ -65,6 +84,12 @@ endif
 
 # How to.
 #
+$(call include,$(bld_root)/dist.make)
+$(call include,$(bld_root)/meta/vc9proj.make)
+$(call include,$(bld_root)/meta/vc10proj.make)
+$(call include,$(bld_root)/meta/vc11proj.make)
+$(call include,$(bld_root)/meta/automake.make)
+
 $(call include,$(bld_root)/cxx/o-e.make)
 $(call include,$(bld_root)/cxx/cxx-o.make)
 $(call include,$(bld_root)/cxx/cxx-d.make)

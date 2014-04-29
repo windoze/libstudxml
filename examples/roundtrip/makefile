@@ -6,8 +6,6 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../build/bootstrap.make
 
 cxx_tun := driver.cxx
 
-#
-#
 cxx_obj  := $(addprefix $(out_base)/,$(cxx_tun:.cxx=.o))
 cxx_od   := $(cxx_obj:.o=.o.d)
 
@@ -16,6 +14,7 @@ studxml.l.cpp-options := $(out_root)/xml/studxml.l.cpp-options
 
 driver   := $(out_base)/driver
 test     := $(out_base)/.test
+dist     := $(out_base)/.dist
 clean    := $(out_base)/.clean
 
 # Build.
@@ -29,6 +28,20 @@ $(call include-dep,$(cxx_od))
 #
 $(out_base)/: $(driver)
 
+# Dist
+#
+$(dist): name := $(subst $(src_root)/examples/,,$(src_base))
+$(dist): sources := $(cxx_tun)
+$(dist): extras := README position.xml
+$(dist): export extra_dist := $(extras) $(name)-vc9.vcproj \
+$(name)-vc10.vcxproj $(name)-vc10.vcxproj.filters \
+$(name)-vc11.vcxproj $(name)-vc11.vcxproj.filters
+$(dist):
+	$(call dist-data,$(sources) $(extras))
+	$(call meta-automake,../template/Makefile.am)
+	$(call meta-vc9proj,../template/template-vc9.vcproj,$(name)-vc9.vcproj)
+	$(call meta-vc10proj,../template/template-vc10.vcxproj,$(name)-vc10.vcxproj)
+	$(call meta-vc11proj,../template/template-vc11.vcxproj,$(name)-vc11.vcxproj)
 
 # Test.
 #
@@ -57,6 +70,12 @@ endif
 
 # How to.
 #
+$(call include,$(bld_root)/dist.make)
+$(call include,$(bld_root)/meta/vc9proj.make)
+$(call include,$(bld_root)/meta/vc10proj.make)
+$(call include,$(bld_root)/meta/vc11proj.make)
+$(call include,$(bld_root)/meta/automake.make)
+
 $(call include,$(bld_root)/cxx/o-e.make)
 $(call include,$(bld_root)/cxx/cxx-o.make)
 $(call include,$(bld_root)/cxx/cxx-d.make)

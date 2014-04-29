@@ -2,6 +2,10 @@
 // copyright : Copyright (c) 2009-2013 Code Synthesis Tools CC
 // license   : MIT; see accompanying LICENSE file
 
+#ifdef NDEBUG
+#  error tests require enabled assert(); un-define the NDEBUG macro
+#endif
+
 #include <string>
 #include <cassert>
 #include <iostream>
@@ -28,7 +32,7 @@ main ()
     p.next ();
     assert (false);
   }
-  catch (const xml::exception& e)
+  catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
   }
@@ -43,7 +47,7 @@ main ()
     p.next ();
     assert (false);
   }
-  catch (const ios_base::failure& e)
+  catch (const ios_base::failure&)
   {
   }
 
@@ -63,7 +67,7 @@ main ()
     p.next_expect (parser::end_element);
     assert (false);
   }
-  catch (const xml::exception& e)
+  catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
   }
@@ -75,7 +79,7 @@ main ()
     p.next_expect (parser::start_element, "root1");
     assert (false);
   }
-  catch (const xml::exception& e)
+  catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
   }
@@ -127,7 +131,7 @@ main ()
     p.next_expect (parser::end_element);
     assert (false);
   }
-  catch (const xml::exception& e)
+  catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
   }
@@ -140,7 +144,7 @@ main ()
     p.attribute<int> ("a");
     assert (false);
   }
-  catch (const xml::exception& e)
+  catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
   }
@@ -220,7 +224,7 @@ main ()
     p.next ();
     assert (false);
   }
-  catch (const xml::exception& e)
+  catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
   }
@@ -249,7 +253,7 @@ main ()
     p.next ();
     assert (false);
   }
-  catch (const xml::exception& e)
+  catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
   }
@@ -302,7 +306,7 @@ main ()
     p.next ();
     assert (false);
   }
-  catch (const xml::exception& e)
+  catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
   }

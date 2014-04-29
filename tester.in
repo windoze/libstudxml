@@ -1,0 +1,44 @@
+#! /bin/sh
+
+# file      : tester.in
+# copyright : Copyright (c) 2009-2013 Code Synthesis Tools CC
+# license   : MIT; see accompanying LICENSE file
+
+#
+# Run test or example. The test driver is in the current directory.
+# The data files, if any, are in $srcdir. If $example is set, then
+# we are testing an example and no output verification is required.
+#
+
+# Globbing returns files in alphabetic order.
+#
+files=`echo $srcdir/*.xml`
+
+if test "$files" != "$srcdir/*.xml"; then
+  for f in $files; do
+    echo ./driver $f
+
+    if test -n "$example"; then
+      ./driver $f
+    else
+      ./driver $f >test.out
+    fi
+
+    if test $? -ne 0; then
+      rm -f test.out
+      exit 1
+    fi
+
+    if test -z "$example"; then
+      @DIFF@ @DIFFFLAGS@ $f test.out
+      r=$?
+      rm -f test.out
+      if test $r -ne 0; then
+        exit 1
+      fi
+    fi
+  done
+else
+  echo ./driver
+  ./driver
+fi
