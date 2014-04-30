@@ -17,7 +17,7 @@ $(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(dirs)))
 $(dist): export dirs := $(dirs)
 $(dist): export docs := LICENSE NEWS README INSTALL version tester.bat
 $(dist): data_dist := libstudxml-vc9.sln libstudxml-vc10.sln \
-libstudxml-vc11.sln
+libstudxml-vc11.sln libstudxml-vc12.sln
 $(dist): exec_dist := bootstrap tester.in
 $(dist): export extra_dist := $(data_dist) $(exec_dist)
 $(dist): export version = $(shell cat $(src_root)/version)
