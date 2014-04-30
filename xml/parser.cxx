@@ -85,13 +85,21 @@ namespace xml
       XML_ParserFree (p_);
   }
 
-  parser::
-  parser (istream& is, const string& iname, feature_type f)
-      : is_ (is), iname_ (iname), feature_ (f),
-        depth_ (0), state_ (state_next), event_ (eof), queue_ (eof),
-        pqname_ (&qname_), pvalue_ (&value_),
-        attr_i_ (0), start_ns_i_ (0), end_ns_i_ (0)
+  void parser::
+  init ()
   {
+    depth_ = 0;
+    state_ = state_next;
+    event_ = eof;
+    queue_ = eof;
+
+    pqname_ = &qname_;
+    pvalue_ = &value_;
+
+    attr_i_ = 0;
+    start_ns_i_ = 0;
+    end_ns_i_ = 0;
+
     if ((feature_ & receive_attributes_map) != 0 &&
         (feature_ & receive_attributes_event) != 0)
       feature_ &= ~receive_attributes_map;
@@ -112,16 +120,16 @@ namespace xml
     //
     XML_SetUserData(p_, this);
 
-    if ((f & receive_elements) != 0)
+    if ((feature_ & receive_elements) != 0)
     {
       XML_SetStartElementHandler (p_, &start_element_);
       XML_SetEndElementHandler (p_, &end_element_);
     }
 
-    if ((f & receive_characters) != 0)
+    if ((feature_ & receive_characters) != 0)
       XML_SetCharacterDataHandler (p_, &characters_);
 
-    if ((f & receive_namespace_decls) != 0)
+    if ((feature_ & receive_namespace_decls) != 0)
       XML_SetNamespaceDeclHandler (p_,
                                    &start_namespace_decl_,
                                    &end_namespace_decl_);
@@ -276,26 +284,24 @@ namespace xml
   }
 
   const parser::element_entry* parser::
-  get_element () const
+  get_element_ () const
   {
     // The start_element_() Expat handler may have already provisioned
     // an entry in the element stack. In this case, we need to get the
     // one before it, if any.
     //
     const element_entry* r (0);
-    element_state::size_type n (element_state_.size ());
-    if (n != 0)
+    element_state::size_type n (element_state_.size () - 1);
+
+    if (element_state_[n].depth == depth_)
+      r = &element_state_[n];
+    else if (n != 0 && element_state_[n].depth > depth_)
     {
       n--;
       if (element_state_[n].depth == depth_)
         r = &element_state_[n];
-      else if (n != 0 && element_state_[n].depth > depth_)
-      {
-        n--;
-        if (element_state_[n].depth == depth_)
-          r = &element_state_[n];
-      }
     }
+
     return r;
   }
 
@@ -354,15 +360,17 @@ namespace xml
       }
     case start_element:
       {
-        const element_entry* e (get_element ());
-        switch (e != 0 ? e->content : mixed)
+        if (const element_entry* e = get_element ())
         {
-        case empty:
-          throw parsing (*this, "element in empty content");
-        case simple:
-          throw parsing (*this, "element in simple content");
-        default:
-          break;
+          switch (e->content)
+          {
+          case empty:
+            throw parsing (*this, "element in empty content");
+          case simple:
+            throw parsing (*this, "element in simple content");
+          default:
+            break;
+          }
         }
 
         // If this is a peek, then delay adjusting the depth.
@@ -564,26 +572,46 @@ namespace xml
     XML_Status s;
     do
     {
-      const size_t cap (4096);
-
-      char* b (static_cast<char*> (XML_GetBuffer (p_, cap)));
-      if (b == 0)
-        throw bad_alloc ();
-
-      // Temporarily unset the exception failbit. Also clear the fail bit
-      // when we reset the old state if it was caused by eof.
-      //
+      if (size_ != 0)
       {
-        stream_exception_controller sec (is_);
-        is_.read (b, static_cast<streamsize> (cap));
+        s = XML_Parse (p_,
+                       static_cast <const char*> (data_.buf),
+                       static_cast <int> (size_),
+                       true);
+
+        if (s == XML_STATUS_ERROR)
+          handle_error ();
+
+        break;
       }
+      else
+      {
+        const size_t cap (4096);
 
-      s = XML_ParseBuffer (p_, static_cast<int> (is_.gcount ()), is_.eof ());
+        char* b (static_cast<char*> (XML_GetBuffer (p_, cap)));
+        if (b == 0)
+          throw bad_alloc ();
 
-      if (s == XML_STATUS_ERROR)
-        handle_error ();
+        // Temporarily unset the exception failbit. Also clear the fail bit
+        // when we reset the old state if it was caused by eof.
+        //
+        istream& is (*data_.is);
+        {
+          stream_exception_controller sec (is);
+          is.read (b, static_cast<streamsize> (cap));
+        }
 
-    } while (s != XML_STATUS_SUSPENDED && !is_.eof ());
+        bool eof (is.eof ());
+
+        s = XML_ParseBuffer (p_, static_cast<int> (is.gcount ()), eof);
+
+        if (s == XML_STATUS_ERROR)
+          handle_error ();
+
+        if (eof)
+          break;
+      }
+    } while (s != XML_STATUS_SUSPENDED);
 
     return event_;
   }

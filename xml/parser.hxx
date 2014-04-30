@@ -105,6 +105,15 @@ namespace xml
             const std::string& input_name,
             feature_type = receive_default);
 
+    // Parse memory buffer that contains the whole document. Input name
+    // is used in diagnostics to identify the document being parsed.
+    //
+    parser (const void* data,
+            std::size_t size,
+            const std::string& input_name,
+            feature_type = receive_default);
+
+
     const std::string&
     input_name () const {return iname_;}
 
@@ -276,7 +285,7 @@ namespace xml
 
     // Optional content processing.
     //
-    public:
+  public:
     enum content_type
     {
                //  element   characters  whitespaces        notes
@@ -329,6 +338,9 @@ namespace xml
     end_namespace_decl_ (void*, const XML_Char*);
 
   private:
+    void
+    init ();
+
     event_type
     next_ (bool peek);
 
@@ -339,7 +351,16 @@ namespace xml
     handle_error ();
 
   private:
-    std::istream& is_;
+    // If size_ is 0, then data is std::istream. Otherwise, it is a buffer.
+    //
+    union
+    {
+      std::istream* is;
+      const void* buf;
+    } data_;
+
+    std::size_t size_;
+
     const std::string iname_;
     feature_type feature_;
 
@@ -410,6 +431,9 @@ namespace xml
     //
     const element_entry*
     get_element () const;
+
+    const element_entry*
+    get_element_ () const;
 
     void
     pop_element ();

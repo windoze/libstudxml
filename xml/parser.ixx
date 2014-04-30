@@ -2,10 +2,33 @@
 // copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 // license   : MIT; see accompanying LICENSE file
 
+#include <cassert>
+
 #include <xml/value-traits.hxx>
 
 namespace xml
 {
+  inline parser::
+  parser (std::istream& is, const std::string& iname, feature_type f)
+      : size_ (0), iname_ (iname), feature_ (f)
+  {
+    data_.is = &is;
+    init ();
+  }
+
+  inline parser::
+  parser (const void* data,
+          std::size_t size,
+          const std::string& iname,
+          feature_type f)
+      : size_ (size), iname_ (iname), feature_ (f)
+  {
+    assert (data != 0 && size != 0);
+
+    data_.buf = data;
+    init ();
+  }
+
   template <typename T>
   inline T parser::
   value () const
@@ -74,5 +97,11 @@ namespace xml
   next_expect (event_type e, const std::string& n)
   {
     return next_expect (e, std::string (), n);
+  }
+
+  inline const parser::element_entry* parser::
+  get_element () const
+  {
+    return element_state_.empty () ? 0 : get_element_ ();
   }
 }
