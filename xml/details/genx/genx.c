@@ -39,8 +39,8 @@ typedef enum
 typedef struct
 {
   genxWriter writer;
-  int        count;
-  int        space;
+  size_t     count;
+  size_t     space;
   void * *   pointers;
 } plist;
 
@@ -50,8 +50,8 @@ typedef struct
 typedef struct
 {
   utf8 buf;
-  int  used;
-  int  space;
+  size_t  used;
+  size_t  space;
 } collector;
 
 /*******************************
@@ -71,7 +71,7 @@ struct genxNamespace_rec
 {
   genxWriter 	writer;
   utf8       	name;
-  int           declCount;
+  size_t        declCount;
   Boolean       baroque;
   genxAttribute declaration;
   genxAttribute defaultDecl;
@@ -159,7 +159,7 @@ void genxSetCharProps(char * p);
 /*******************************
  * private memory utilities
  */
-static void * allocate(genxWriter w, int bytes)
+static void * allocate(genxWriter w, size_t bytes)
 {
   if (w->alloc)
     return (void *) (*w->alloc)(w->userData, bytes);
@@ -194,7 +194,7 @@ static genxStatus initCollector(genxWriter w, collector * c)
   return GENX_SUCCESS;
 }
 
-static genxStatus growCollector(genxWriter w, collector * c, int size)
+static genxStatus growCollector(genxWriter w, collector * c, size_t size)
 {
   utf8 newSpace;
 
@@ -220,7 +220,7 @@ static void endCollect(collector * c)
 
 static genxStatus collectString(genxWriter w, collector * c, constUtf8 string)
 {
-  int sl = strlen((const char *) string);
+  size_t sl = strlen((const char *) string);
 
   if (sl >= c->space)
     if ((w->status = growCollector(w, c, sl)) != GENX_SUCCESS)
@@ -253,7 +253,7 @@ static genxStatus initPlist(genxWriter w, plist * pl)
 static Boolean checkExpand(plist * pl)
 {
   void * * newlist;
-  int i;
+  size_t i;
 
   if (pl->count < pl->space)
     return True;
@@ -285,9 +285,9 @@ static genxStatus listAppend(plist * pl, void * pointer)
 /*
  * insert in place, shuffling up
  */
-static genxStatus listInsert(plist * pl, void * pointer, int at)
+static genxStatus listInsert(plist * pl, void * pointer, size_t at)
 {
-  int i;
+  size_t i;
 
   if (!checkExpand(pl))
     return GENX_ALLOC_FAILED;
@@ -306,7 +306,7 @@ static genxStatus listInsert(plist * pl, void * pointer, int at)
 
 static genxNamespace findNamespace(plist * pl, constUtf8 uri)
 {
-  int i;
+  size_t i;
   genxNamespace * nn = (genxNamespace *) pl->pointers;
 
   for (i = 0; i < pl->count; i++)
@@ -318,7 +318,7 @@ static genxNamespace findNamespace(plist * pl, constUtf8 uri)
 
 static genxElement findElement(plist * pl, constUtf8 xmlns, constUtf8 type)
 {
-  int i;
+  size_t i;
   genxElement * ee = (genxElement *) pl->pointers;
 
   for (i = 0; i < pl->count; i++)
@@ -360,7 +360,8 @@ static utf8 storePrefix(genxWriter w, constUtf8 prefix, Boolean force)
     prefix = buf;
   }
 
-  high = w->prefixes.count; low = -1;
+  high = (int) w->prefixes.count;
+  low = -1;
   while (high - low > 1)
   {
     int probe = (high + low) / 2;
@@ -387,7 +388,7 @@ static utf8 storePrefix(genxWriter w, constUtf8 prefix, Boolean force)
     return NULL;
   }
 
-  w->status = listInsert(&w->prefixes, (void *) prefix, high);
+  w->status = listInsert(&w->prefixes, (void *) prefix, (size_t) high);
   if (w->status != GENX_SUCCESS)
     return NULL;
 
@@ -622,7 +623,7 @@ genxWriter genxNew(genxAlloc alloc, genxDealloc dealloc, void * userData)
 
 genxStatus genxReset (genxWriter w)
 {
-  int i;
+  size_t i;
 
   /* Clean up the stack. */
   w->stack.count = 0;
@@ -737,7 +738,7 @@ genxDealloc genxGetDealloc(genxWriter w)
  */
 void genxDispose(genxWriter w)
 {
-  int i;
+  size_t i;
   genxNamespace * nn = (genxNamespace *) w->namespaces.pointers;
   genxElement * ee = (genxElement *) w->elements.pointers;
   genxAttribute * aa = (genxAttribute *) w->attributes.pointers;
@@ -1109,7 +1110,8 @@ static genxAttribute declareAttribute(genxWriter w, genxNamespace ns,
   }
 
   /* attribute list has to be kept sorted per c14n rules */
-  high = w->attributes.count; low = -1;
+  high = (int) w->attributes.count;
+  low = -1;
   while (high - low > 1)
   {
     int probe = (high + low) / 2;
@@ -1150,7 +1152,7 @@ static genxAttribute declareAttribute(genxWriter w, genxNamespace ns,
     if ((w->status = collectString(w, &a->value, valuestr)) != GENX_SUCCESS)
       goto busted;
 
-  w->status = listInsert(&w->attributes, a, high);
+  w->status = listInsert(&w->attributes, a, (size_t) high);
   if (w->status != GENX_SUCCESS)
     goto busted;
 
@@ -1274,7 +1276,7 @@ static genxStatus writeAttribute(genxAttribute a)
  */
 static genxStatus writeStartTag(genxWriter w, Boolean close)
 {
-  int i;
+  size_t i;
   genxAttribute * aa = (genxAttribute *) w->attributes.pointers;
   genxElement e = w->nowStarting;
 
@@ -1358,7 +1360,7 @@ static genxStatus unsetDefaultNamespace(genxWriter w)
   Boolean found = False;
 
   /* don't put it in if not needed */
-  i = w->stack.count - 1;
+  i = (int) (w->stack.count) - 1;
   while (found == False && i > 0)
   {
     while (w->stack.pointers[i] != NULL)
@@ -1503,7 +1505,7 @@ static genxStatus addNamespace(genxNamespace ns, constUtf8 prefix)
      *  case it's a no-op; or, if there's another declaration for this
      *  prefix on another namespace, in which case we have to over-ride
      */
-    i = w->stack.count - 1;
+    i = (int) (w->stack.count) - 1;
     while (i > 0)
     {
       while (w->stack.pointers[i] != NULL)
@@ -1539,7 +1541,7 @@ static genxStatus addNamespace(genxNamespace ns, constUtf8 prefix)
    * If this namespace is already declared on
    *  this element (with different prefix/decl) which is an error.
    */
-  i = w->stack.count - 1;
+  i = (int) (w->stack.count) - 1;
   while (w->stack.pointers[i] != NULL)
   {
     genxNamespace otherNs;
@@ -1777,7 +1779,9 @@ genxStatus genxEndElement(genxWriter w)
      *  before unwinding the stack because that might reset some xmlns
      *  prefixes to the context in the parent element
      */
-    for (i = w->stack.count - 1; w->stack.pointers[i] != NULL; i -= 2)
+    for (i = (int) (w->stack.count) - 1;
+         w->stack.pointers[i] != NULL;
+         i -= 2)
       ;
     e = (genxElement) w->stack.pointers[--i];
 
@@ -1823,7 +1827,7 @@ genxStatus genxEndElement(genxWriter w)
        */
       if (ns->baroque)
       {
-	i = w->stack.count;
+	i = (int) w->stack.count;
 	while (i > 0)
 	{
 	  while (w->stack.pointers[i] != NULL)
@@ -1850,9 +1854,9 @@ genxStatus genxEndElement(genxWriter w)
   }
 
   /* pop the NULL */
-  --w->stack.count;
-  if (w->stack.count < 0)
+  if (w->stack.count == 0)
     return w->status = GENX_NO_START_TAG;
+  --w->stack.count;
 
   if (w->stack.count == 0)
     w->sequence = SEQUENCE_POST_DOC;
@@ -1980,7 +1984,7 @@ genxStatus genxAddBoundedText(genxWriter w, constUtf8 start, constUtf8 end)
     return w->status = GENX_SEQUENCE_ERROR;
 }
 
-genxStatus genxAddCountedText(genxWriter w, constUtf8 start, int byteCount)
+genxStatus genxAddCountedText(genxWriter w, constUtf8 start, size_t byteCount)
 {
   utf8 end = (utf8) (start + byteCount);
 
@@ -2141,7 +2145,7 @@ genxStatus genxXmlDeclaration(genxWriter w,
 
 genxStatus genxComment(genxWriter w, constUtf8 text)
 {
-  int i;
+  size_t i;
 
   if (w->sequence == SEQUENCE_NO_DOC ||
       w->sequence == SEQUENCE_START_ATTR)
@@ -2185,7 +2189,7 @@ genxStatus genxComment(genxWriter w, constUtf8 text)
 
 genxStatus genxPI(genxWriter w, constUtf8 target, constUtf8 text)
 {
-  int i;
+  size_t i;
 
   if (w->sequence == SEQUENCE_NO_DOC ||
       w->sequence == SEQUENCE_START_ATTR)

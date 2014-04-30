@@ -12,6 +12,8 @@
 #ifndef GENX_H
 #define GENX_H
 
+#include <stddef.h> /* size_t */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -71,7 +73,7 @@ typedef struct genxNamespace_rec * genxNamespace;
 typedef struct genxElement_rec * genxElement;
 typedef struct genxAttribute_rec * genxAttribute;
 
-typedef void * (*genxAlloc) (void * userData, int bytes);
+typedef void * (*genxAlloc) (void * userData, size_t bytes);
 typedef void (*genxDealloc) (void * userData, void* data);
 
 /*
@@ -275,10 +277,10 @@ genxStatus genxEndElement(genxWriter w);
 /*
  * Write some text
  * You can't write any text outside the root element, except with
- *  genxComment and genxPI
+ * genxComment and genxPI.
  */
 genxStatus genxAddText(genxWriter w, constUtf8 start);
-genxStatus genxAddCountedText(genxWriter w, constUtf8 start, int byteCount);
+genxStatus genxAddCountedText(genxWriter w, constUtf8 start, size_t byteCount);
 genxStatus genxAddBoundedText(genxWriter w, constUtf8 start, constUtf8 end);
 
 /*
