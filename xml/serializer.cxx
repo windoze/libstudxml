@@ -207,8 +207,7 @@ namespace xml
   {
     if (genxStatus e = genxAddCountedText (
           s_,
-          reinterpret_cast<constUtf8> (value.c_str ()),
-          static_cast<int> (value.size ())))
+          reinterpret_cast<constUtf8> (value.c_str ()), value.size ()))
       handle_error (e);
   }
 
