@@ -38,6 +38,9 @@ namespace xml
     std::string& name () {return name_;}
     std::string& prefix () {return prefix_;}
 
+    bool
+    empty () const {return name_.empty () && ns_.empty ();}
+
     // String representation in the [<namespace>#]<name> form.
     //
     std::string
