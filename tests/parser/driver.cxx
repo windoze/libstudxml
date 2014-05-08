@@ -7,6 +7,7 @@
 #endif
 
 #include <string>
+#include <vector>
 #include <cassert>
 #include <iostream>
 #include <sstream>
@@ -388,5 +389,27 @@ main ()
   catch (const xml::exception&)
   {
     // cerr << e.what () << endl;
+  }
+
+  // Test the iterator interface.
+  //
+  {
+    istringstream is ("<root><nested>X</nested></root>");
+    parser p (is, "iterator");
+
+    vector<parser::event_type> v;
+
+    for (parser::iterator i (p.begin ()); i != p.end (); ++i)
+      v.push_back (*i);
+
+    //for (parser::event_type e: p)
+    //  v.push_back (e);
+
+    assert (v.size () == 5);
+    assert (v[0] == parser::start_element);
+    assert (v[1] == parser::start_element);
+    assert (v[2] == parser::characters);
+    assert (v[3] == parser::end_element);
+    assert (v[4] == parser::end_element);
   }
 }

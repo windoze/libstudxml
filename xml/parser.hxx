@@ -334,6 +334,32 @@ namespace xml
                  const std::string& ns, const std::string& name,
                  content_type);
 
+    // C++11 range-based for support. Generally, the iterator interface
+    // doesn't make much sense for the parser so for now we have an
+    // implementation that is just enough to the range-based for.
+    //
+  public:
+    struct iterator
+    {
+      typedef event_type value_type;
+
+      iterator (parser* p = 0, event_type e = eof): p_ (p), e_ (e) {}
+      value_type operator* () const {return e_;}
+      iterator& operator++ () {e_ = p_->next (); return *this;}
+
+      // Comparison only makes sense when comparing to end (eof).
+      //
+      bool operator== (iterator y) const {return e_ == eof && y.e_ == eof;}
+      bool operator!= (iterator y) const {return !(*this == y);}
+
+    private:
+      parser* p_;
+      event_type e_;
+    };
+
+    iterator begin () {return iterator (this, next ());}
+    iterator end () {return iterator (this, eof);}
+
   private:
     static void XMLCALL
     start_element_ (void*, const XML_Char*, const XML_Char**);
