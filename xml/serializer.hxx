@@ -56,8 +56,6 @@ namespace xml
   public:
     typedef xml::qname qname_type;
 
-    ~serializer ();
-
     // Serialize to std::ostream. Output name is used in diagnostics to
     // identify the document being serialized. std::ios_base::failure
     // exception is used to report io errors (badbit and failbit). The
@@ -72,9 +70,15 @@ namespace xml
     const std::string&
     output_name () const {return oname_;}
 
+    ~serializer ();
+
+  private:
+    serializer (const serializer&);
+    serializer& operator= (const serializer&);
+
     // Serialization functions.
     //
-    public:
+  public:
 
     // Elements.
     //

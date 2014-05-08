@@ -95,8 +95,6 @@ namespace xml
                                                 receive_characters |
                                                 receive_attributes_map;
 
-    ~parser ();
-
     // Parse std::istream. Input name is used in diagnostics to identify
     // the document being parsed. std::ios_base::failure exception is
     // used to report io errors (badbit and failbit).
@@ -113,9 +111,14 @@ namespace xml
             const std::string& input_name,
             feature_type = receive_default);
 
-
     const std::string&
     input_name () const {return iname_;}
+
+    ~parser ();
+
+  private:
+    parser (const parser&);
+    parser& operator= (const parser&);
 
     // Parsing events.
     //
