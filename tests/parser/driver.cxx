@@ -84,6 +84,17 @@ main ()
     // cerr << e.what () << endl;
   }
 
+  // Test next_expect() with content setting.
+  //
+  {
+    istringstream is ("<root>  </root>");
+    parser p (is, "empty");
+
+    p.next_expect (parser::start_element, "root", parser::empty);
+    p.next_expect (parser::end_element);
+    p.next_expect (parser::eof);
+  }
+
   // Test namespace declarations.
   //
   {

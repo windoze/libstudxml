@@ -178,10 +178,10 @@ namespace xml
     next_expect (event_type);
 
     void
-    next_expect (event_type, const qname_type& qname);
+    next_expect (event_type, const std::string& name);
 
     void
-    next_expect (event_type, const std::string& name);
+    next_expect (event_type, const qname_type& qname);
 
     void
     next_expect (event_type, const std::string& ns, const std::string& name);
@@ -320,6 +320,19 @@ namespace xml
         ? element_state_.back ().content
         : mixed;
     }
+
+    // Versions that also set the content. Event type must be start_element.
+    //
+    void
+    next_expect (event_type, const std::string& name, content_type);
+
+    void
+    next_expect (event_type, const qname_type& qname, content_type);
+
+    void
+    next_expect (event_type,
+                 const std::string& ns, const std::string& name,
+                 content_type);
 
   private:
     static void XMLCALL

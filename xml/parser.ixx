@@ -90,13 +90,39 @@ namespace xml
   inline void parser::
   next_expect (event_type e, const qname_type& qn)
   {
-    return next_expect (e, qn.namespace_ (), qn.name ());
+    next_expect (e, qn.namespace_ (), qn.name ());
   }
 
   inline void parser::
   next_expect (event_type e, const std::string& n)
   {
-    return next_expect (e, std::string (), n);
+    next_expect (e, std::string (), n);
+  }
+
+  inline void parser::
+  next_expect (event_type e, const qname_type& qn, content_type c)
+  {
+    next_expect (e, qn);
+    assert (e == start_element);
+    content (c);
+  }
+
+  inline void parser::
+  next_expect (event_type e, const std::string& n, content_type c)
+  {
+    next_expect (e, std::string (), n);
+    assert (e == start_element);
+    content (c);
+  }
+
+  inline void parser::
+  next_expect (event_type e,
+               const std::string& ns, const std::string& n,
+               content_type c)
+  {
+    next_expect (e, ns, n);
+    assert (e == start_element);
+    content (c);
   }
 
   inline const parser::element_entry* parser::
