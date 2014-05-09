@@ -147,11 +147,11 @@ namespace xml
       //
       switch (content ())
       {
-      case empty:
+      case content_type::empty:
         throw parsing (*this, "character in empty content");
-      case simple:
+      case content_type::simple:
         throw parsing (*this, "element in simple content");
-      case complex:
+      case content_type::complex:
         throw parsing (*this, "character in complex content");
       default:
         assert (false);
@@ -321,7 +321,7 @@ namespace xml
   string parser::
   element ()
   {
-    content (simple);
+    content (content_type::simple);
     string r;
 
     // The content of the element can be empty in which case there
@@ -435,9 +435,9 @@ namespace xml
         {
           switch (e->content)
           {
-          case empty:
+          case content_type::empty:
             throw parsing (*this, "element in empty content");
-          case simple:
+          case content_type::simple:
             throw parsing (*this, "element in simple content");
           default:
             break;
@@ -865,8 +865,8 @@ namespace xml
     //
     switch (cont)
     {
-    case empty:
-    case complex:
+    case content_type::empty:
+    case content_type::complex:
       {
         for (int i (0); i != n; ++i)
         {
@@ -909,7 +909,7 @@ namespace xml
       // into a single event. To do this we will let the parser run
       // until we reach the end of the element.
       //
-      if (cont == simple)
+      if (cont == content_type::simple)
         p.accumulate_ = true;
       else
         XML_StopParser (p.p_, true);

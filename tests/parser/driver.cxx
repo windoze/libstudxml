@@ -91,7 +91,7 @@ main ()
     istringstream is ("<root>  </root>");
     parser p (is, "empty");
 
-    p.next_expect (parser::start_element, "root", parser::empty);
+    p.next_expect (parser::start_element, "root", content::empty);
     p.next_expect (parser::end_element);
     p.next_expect (parser::eof);
   }
@@ -247,7 +247,7 @@ main ()
               parser::receive_default | parser::receive_attributes_event);
 
     assert (p.next () == parser::start_element);
-    p.content (parser::empty);
+    p.content (content::empty);
     assert (p.next () == parser::start_attribute);
     assert (p.next () == parser::characters && p.value () == " x ");
     assert (p.next () == parser::end_attribute);
@@ -261,7 +261,7 @@ main ()
     parser p (is, "empty");
 
     assert (p.next () == parser::start_element);
-    p.content (parser::empty);
+    p.content (content::empty);
     p.next ();
     assert (false);
   }
@@ -277,7 +277,7 @@ main ()
     parser p (is, "simple");
 
     assert (p.next () == parser::start_element);
-    p.content (parser::simple);
+    p.content (content::simple);
     assert (p.next () == parser::characters && p.value () == " X ");
     assert (p.next () == parser::end_element);
     assert (p.next () == parser::eof);
@@ -289,7 +289,7 @@ main ()
     parser p (is, "simple");
 
     assert (p.next () == parser::start_element);
-    p.content (parser::simple);
+    p.content (content::simple);
     assert (p.next () == parser::characters && p.value () == " ? ");
     p.next ();
     assert (false);
@@ -310,7 +310,7 @@ main ()
 
     assert (p.next () == parser::start_element);
     p.next_expect (parser::start_namespace_decl);
-    p.content (parser::simple);
+    p.content (content::simple);
     assert (p.next () == parser::characters && p.value () == "123");
     p.next_expect (parser::end_namespace_decl);
     assert (p.next () == parser::end_element);
@@ -329,7 +329,7 @@ main ()
 
     assert (p.next () == parser::start_element);
     p.next_expect (parser::start_namespace_decl);
-    p.content (parser::simple);
+    p.content (content::simple);
     p.next ();
     assert (false);
   }
@@ -351,21 +351,21 @@ main ()
               parser::receive_default | parser::receive_attributes_event);
 
     assert (p.next () == parser::start_element); // root
-    p.content (parser::complex);
+    p.content (content::complex);
 
     assert (p.next () == parser::start_attribute);
     assert (p.next () == parser::characters && p.value () == " x ");
     assert (p.next () == parser::end_attribute);
 
     assert (p.next () == parser::start_element); // nested
-    p.content (parser::complex);
+    p.content (content::complex);
 
     assert (p.next () == parser::start_element); // inner
-    p.content (parser::empty);
+    p.content (content::empty);
     assert (p.next () == parser::end_element);   // inner
 
     assert (p.next () == parser::start_element); // inner
-    p.content (parser::simple);
+    p.content (content::simple);
     assert (p.next () == parser::characters && p.value () == " X ");
     assert (p.next () == parser::end_element);   // inner
 
@@ -380,7 +380,7 @@ main ()
     parser p (is, "complex");
 
     assert (p.next () == parser::start_element);
-    p.content (parser::complex);
+    p.content (content::complex);
     assert (p.next () == parser::start_element);
     assert (p.next () == parser::end_element);
     p.next ();
@@ -413,7 +413,7 @@ main ()
                       "</root>");
     parser p (is, "element");
 
-    p.next_expect (parser::start_element, "root", parser::complex);
+    p.next_expect (parser::start_element, "root", content::complex);
 
     p.next_expect (parser::start_element, "nested");
     assert (p.element () == "X");

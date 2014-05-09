@@ -29,6 +29,7 @@
 
 #include <xml/forward.hxx>
 #include <xml/qname.hxx>
+#include <xml/content.hxx>
 #include <xml/exception.hxx>
 
 #include <xml/details/export.hxx>
@@ -80,6 +81,8 @@ namespace xml
   {
   public:
     typedef xml::qname qname_type;
+    typedef xml::content content_type;
+
     typedef unsigned short feature_type;
 
     // If both receive_attributes_event and receive_attributes_map are
@@ -246,15 +249,6 @@ namespace xml
     // Optional content processing.
     //
   public:
-    enum content_type
-    {
-               //  element   characters  whitespaces        notes
-      empty,   //    no          no        ignored
-      simple,  //    no          yes       preserved   content accumulated
-      complex, //    yes         no        ignored
-      mixed    //    yes         yes       preserved
-    };
-
     // Note that you cannot get/set content while peeking.
     //
     void
@@ -434,7 +428,7 @@ namespace xml
     //
     struct element_entry
     {
-      element_entry (std::size_t d, content_type c = mixed)
+      element_entry (std::size_t d, content_type c = content_type::mixed)
           : depth (d), content (c), attr_unhandled_ (0) {}
 
       std::size_t depth;

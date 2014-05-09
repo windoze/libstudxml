@@ -205,7 +205,7 @@ namespace xml
     return
       !element_state_.empty () && element_state_.back ().depth == depth_
       ? element_state_.back ().content
-      : mixed;
+      : content_type (content_type::mixed);
   }
 
   inline const parser::element_entry* parser::
