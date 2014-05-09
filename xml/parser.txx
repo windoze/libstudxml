@@ -27,4 +27,17 @@ namespace xml
 
     return dv;
   }
+
+  template <typename T>
+  T parser::
+  element (const qname_type& qn, const T& dv)
+  {
+    if (peek () == start_element && qname () == qn)
+    {
+      next ();
+      return element<T> ();
+    }
+
+    return dv;
+  }
 }

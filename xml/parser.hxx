@@ -219,6 +219,7 @@ namespace xml
     const std::string& name () const {return pqname_->name ();}
     const std::string& prefix () const {return pqname_->prefix ();}
 
+    std::string& value () {return *pvalue_;}
     const std::string& value () const {return *pvalue_;}
     template <typename T> T value () const;
 
@@ -246,11 +247,12 @@ namespace xml
     attribute (const std::string& name) const;
 
     std::string
-    attribute (const std::string& name, const std::string& dv) const;
+    attribute (const std::string& name,
+               const std::string& default_value) const;
 
     template <typename T>
     T
-    attribute (const std::string& name, const T& dv) const;
+    attribute (const std::string& name, const T& default_value) const;
 
     const std::string&
     attribute (const qname_type& qname) const;
@@ -260,11 +262,12 @@ namespace xml
     attribute (const qname_type& qname) const;
 
     std::string
-    attribute (const qname_type& qname, const std::string& dv) const;
+    attribute (const qname_type& qname,
+               const std::string& default_value) const;
 
     template <typename T>
     T
-    attribute (const qname_type& qname, const T& dv) const;
+    attribute (const qname_type& qname, const T& default_value) const;
 
     bool
     attribute_present (const std::string& name) const;
@@ -336,6 +339,49 @@ namespace xml
     next_expect (event_type,
                  const std::string& ns, const std::string& name,
                  content_type);
+
+    // Helpers for parsing elements with simple content. The first two
+    // functions assume that start_element has already been parsed. The
+    // rest parse the complete element, from start to end.
+    //
+    // Note also that as with attribute(), there is no (namespace,name)
+    // overload since it would conflicts with (namespace,default_value).
+    //
+  public:
+    std::string
+    element ();
+
+    template <typename T>
+    T
+    element ();
+
+    std::string
+    element (const std::string& name);
+
+    std::string
+    element (const qname_type& qname);
+
+    template <typename T>
+    T
+    element (const std::string& name);
+
+    template <typename T>
+    T
+    element (const qname_type& qname);
+
+    std::string
+    element (const std::string& name, const std::string& default_value);
+
+    std::string
+    element (const qname_type& qname, const std::string& default_value);
+
+    template <typename T>
+    T
+    element (const std::string& name, const T& default_value);
+
+    template <typename T>
+    T
+    element (const qname_type& qname, const T& default_value);
 
     // C++11 range-based for support. Generally, the iterator interface
     // doesn't make much sense for the parser so for now we have an
@@ -420,7 +466,7 @@ namespace xml
     // and namespace decls.
     //
     const qname_type* pqname_;
-    const std::string* pvalue_;
+    std::string* pvalue_;
 
     unsigned long long line_;
     unsigned long long column_;

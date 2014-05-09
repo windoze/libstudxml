@@ -125,6 +125,54 @@ namespace xml
     content (c);
   }
 
+  template <typename T>
+  inline T parser::
+  element ()
+  {
+    return value_traits<T>::parse (element (), *this);
+  }
+
+  inline std::string parser::
+  element (const std::string& n)
+  {
+    next_expect (start_element, n);
+    return element ();
+  }
+
+  inline std::string parser::
+  element (const qname_type& qn)
+  {
+    next_expect (start_element, qn);
+    return element ();
+  }
+
+  template <typename T>
+  inline T parser::
+  element (const std::string& n)
+  {
+    return value_traits<T>::parse (element (n), *this);
+  }
+
+  template <typename T>
+  inline T parser::
+  element (const qname_type& qn)
+  {
+    return value_traits<T>::parse (element (qn), *this);
+  }
+
+  inline std::string parser::
+  element (const std::string& n, const std::string& dv)
+  {
+    return element (qname_type (n), dv);
+  }
+
+  template <typename T>
+  inline T parser::
+  element (const std::string& n, const T& dv)
+  {
+    return element<T> (qname_type (n), dv);
+  }
+
   inline const parser::element_entry* parser::
   get_element () const
   {

@@ -391,6 +391,64 @@ main ()
     // cerr << e.what () << endl;
   }
 
+  // Test element with simple content helpers.
+  //
+  {
+    istringstream is ("<root>"
+                      "  <nested>X</nested>"
+                      "  <nested/>"
+                      "  <nested>123</nested>"
+                      "  <nested>Y</nested>"
+                      "  <t:nested xmlns:t='test'>Z</t:nested>"
+                      "  <nested>234</nested>"
+                      "  <t:nested xmlns:t='test'>345</t:nested>"
+                      "  <nested>A</nested>"
+                      "  <t:nested xmlns:t='test'>B</t:nested>"
+                      "  <nested1>A</nested1>"
+                      "  <t:nested1 xmlns:t='test'>B</t:nested1>"
+                      "  <nested>1</nested>"
+                      "  <t:nested xmlns:t='test'>2</t:nested>"
+                      "  <nested1>1</nested1>"
+                      "  <t:nested1 xmlns:t='test'>2</t:nested1>"
+                      "</root>");
+    parser p (is, "element");
+
+    p.next_expect (parser::start_element, "root", parser::complex);
+
+    p.next_expect (parser::start_element, "nested");
+    assert (p.element () == "X");
+
+    p.next_expect (parser::start_element, "nested");
+    assert (p.element () == "");
+
+    p.next_expect (parser::start_element, "nested");
+    assert (p.element<unsigned int> () == 123);
+
+    assert (p.element ("nested") == "Y");
+    assert (p.element (qname ("test", "nested")) == "Z");
+
+    assert (p.element<unsigned int> ("nested") == 234);
+    assert (p.element<unsigned int> (qname ("test", "nested")) == 345);
+
+    assert (p.element ("nested", "a") == "A");
+    assert (p.element (qname ("test", "nested"), "b") == "B");
+
+    assert (p.element ("nested", "a") == "a" &&
+            p.element ("nested1") == "A");
+    assert (p.element (qname ("test", "nested"), "b") == "b" &&
+            p.element (qname ("test", "nested1")) == "B");
+
+    assert (p.element<unsigned int> ("nested", 10) == 1);
+    assert (p.element<unsigned int> (qname ("test", "nested"), 20) == 2);
+
+    assert (p.element<unsigned int> ("nested", 10) == 10 &&
+            p.element<unsigned int> ("nested1") == 1);
+    assert (p.element<unsigned int> (qname ("test", "nested"), 20) == 20 &&
+            p.element<unsigned int> (qname ("test", "nested1")) == 2);
+
+    p.next_expect (parser::end_element);
+  }
+
   // Test the iterator interface.
   //
   {

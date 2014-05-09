@@ -283,6 +283,42 @@ namespace xml
                      qname_type (ns, n).string () + "' expected");
   }
 
+  string parser::
+  element ()
+  {
+    content (simple);
+    string r;
+
+    // The content of the element can be empty in which case there
+    // will be no characters event.
+    //
+    event_type e (next ());
+    if (e == characters)
+    {
+      r.swap (value ());
+      e = next ();
+    }
+
+    // We cannot really get anything other than end_element since
+    // the simple content validation won't allow it.
+    //
+    assert (e == end_element);
+
+    return r;
+  }
+
+  string parser::
+  element (const qname_type& qn, const string& dv)
+  {
+    if (peek () == start_element && qname () == qn)
+    {
+      next ();
+      return element ();
+    }
+
+    return dv;
+  }
+
   const parser::element_entry* parser::
   get_element_ () const
   {
