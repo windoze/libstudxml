@@ -19,6 +19,55 @@ namespace xml
   }
 
   inline void serializer::
+  element (const std::string& v)
+  {
+    if (!v.empty ())
+      characters (v);
+
+    end_element ();
+  }
+
+  template <typename T>
+  inline void serializer::
+  element (const T& v)
+  {
+    element (value_traits<T>::serialize (v, *this));
+  }
+
+  inline void serializer::
+  element (const std::string& n, const std::string& v)
+  {
+    element (std::string (), n, v);
+  }
+
+  template <typename T>
+  inline void serializer::
+  element (const std::string& n, const T& v)
+  {
+    element (n, value_traits<T>::serialize (v, *this));
+  }
+
+  inline void serializer::
+  element (const qname_type& qn, const std::string& v)
+  {
+    element (qn.namespace_ (), qn.name (), v);
+  }
+
+  template <typename T>
+  inline void serializer::
+  element (const qname_type& qn, const T& v)
+  {
+    element (qn, value_traits<T>::serialize (v, *this));
+  }
+
+  template <typename T>
+  inline void serializer::
+  element (const std::string& ns, const std::string& n, const T& v)
+  {
+    element (ns, n, value_traits<T>::serialize (v, *this));
+  }
+
+  inline void serializer::
   start_attribute (const qname_type& qname)
   {
     start_attribute (qname.namespace_ (), qname.name ());

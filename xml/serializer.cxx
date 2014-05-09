@@ -173,6 +173,13 @@ namespace xml
   }
 
   void serializer::
+  element (const string& ns, const string& n, const string& v)
+  {
+    start_element (ns, n);
+    element (v);
+  }
+
+  void serializer::
   start_attribute (const string& ns, const string& name)
   {
     if (genxStatus e = genxStartAttributeLiteral (

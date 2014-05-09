@@ -94,6 +94,42 @@ namespace xml
     void
     end_element ();
 
+    // Helpers for serializing elements with simple content. The first two
+    // functions assume that start_element() has already been called. The
+    // other two serialize the complete element, from start to end.
+    //
+    void
+    element (const std::string& value);
+
+    template <typename T>
+    void
+    element (const T& value);
+
+    void
+    element (const std::string& name, const std::string& value);
+
+    template <typename T>
+    void
+    element (const std::string& name, const T& value);
+
+    void
+    element (const qname_type& qname, const std::string& value);
+
+    template <typename T>
+    void
+    element (const qname_type& qname, const T& value);
+
+    void
+    element (const std::string& namespace_,
+             const std::string& name,
+             const std::string& value);
+
+    template <typename T>
+    void
+    element (const std::string& namespace_,
+             const std::string& name,
+             const T& value);
+
     // Attributes.
     //
     void

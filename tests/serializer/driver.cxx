@@ -63,4 +63,40 @@ main ()
 
     assert (os.str () == "<root version=\"123\">true</root>\n");
   }
+
+  // Test helpers for serializing elements with simple content.
+  //
+  {
+    ostringstream os;
+    serializer s (os, "element", 0);
+
+    s.start_element ("root");
+
+    s.start_element ("nested");
+    s.element ("X");
+
+    s.start_element ("nested");
+    s.element (123);
+
+    s.element ("nested", "X");
+    s.element ("nested", 123);
+    s.element ("test", "nested", "X");
+    s.element ("test", "nested", 123);
+    s.element (qname ("test", "nested"), "X");
+    s.element (qname ("test", "nested"), 123);
+
+    s.end_element (); // root
+
+    assert (os.str () ==
+            "<root>"
+            "<nested>X</nested>"
+            "<nested>123</nested>"
+            "<nested>X</nested>"
+            "<nested>123</nested>"
+            "<g1:nested xmlns:g1=\"test\">X</g1:nested>"
+            "<g1:nested xmlns:g1=\"test\">123</g1:nested>"
+            "<g1:nested xmlns:g1=\"test\">X</g1:nested>"
+            "<g1:nested xmlns:g1=\"test\">123</g1:nested>"
+            "</root>\n");
+  }
 }
