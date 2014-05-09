@@ -29,6 +29,19 @@ namespace xml
     init ();
   }
 
+  inline parser::event_type parser::
+  peek ()
+  {
+    if (state_ == state_peek)
+      return event_;
+    else
+    {
+      event_type e (next_ (true));
+      state_ = state_peek; // Set it after the call to next_().
+      return e;
+    }
+  }
+
   template <typename T>
   inline T parser::
   value () const
@@ -171,6 +184,28 @@ namespace xml
   element (const std::string& n, const T& dv)
   {
     return element<T> (qname_type (n), dv);
+  }
+
+  inline void parser::
+  content (content_type c)
+  {
+    assert (state_ == state_next);
+
+    if (!element_state_.empty () && element_state_.back ().depth == depth_)
+      element_state_.back ().content = c;
+    else
+      element_state_.push_back (element_entry (depth_, c));
+  }
+
+  inline parser::content_type parser::
+  content () const
+  {
+    assert (state_ == state_next);
+
+    return
+      !element_state_.empty () && element_state_.back ().depth == depth_
+      ? element_state_.back ().content
+      : mixed;
   }
 
   inline const parser::element_entry* parser::

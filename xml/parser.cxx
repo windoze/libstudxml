@@ -204,6 +204,41 @@ namespace xml
     istream::iostate old_state_;
   };
 
+  parser::event_type parser::
+  next ()
+  {
+    if (state_ == state_next)
+      return next_ (false);
+    else
+    {
+      // If we previously peeked at start/end_element, then adjust
+      // state accordingly.
+      //
+      switch (event_)
+      {
+      case end_element:
+        {
+          if (!element_state_.empty () &&
+              element_state_.back ().depth == depth_)
+            pop_element ();
+
+          depth_--;
+          break;
+        }
+      case start_element:
+        {
+          depth_++;
+          break;
+        }
+      default:
+        break;
+      }
+
+      state_ = state_next;
+      return event_;
+    }
+  }
+
   const string& parser::
   attribute (const qname_type& qn) const
   {

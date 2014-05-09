@@ -12,7 +12,6 @@
 #include <string>
 #include <iosfwd>
 #include <cstddef> // std::size_t
-#include <cassert>
 
 #include <xml/details/config.hxx> // LIBSTUDXML_EXTERNAL_EXPAT
 
@@ -138,41 +137,7 @@ namespace xml
     };
 
     event_type
-    next ()
-    {
-      //@@ Move to .ixx.
-
-      if (state_ == state_next)
-        return next_ (false);
-      else
-      {
-        // If we previously peeked at start/end_element, then adjust
-        // state accordingly.
-        //
-        switch (event_)
-        {
-        case end_element:
-          {
-            if (!element_state_.empty () &&
-                element_state_.back ().depth == depth_)
-              pop_element ();
-
-            depth_--;
-            break;
-          }
-        case start_element:
-          {
-            depth_++;
-            break;
-          }
-        default:
-          break;
-        }
-
-        state_ = state_next;
-        return event_;
-      }
-    }
+    next ();
 
     // Get the next event and make sure that it's what's expected. If it
     // is not, then throw an appropriate parsing exception.
@@ -190,19 +155,7 @@ namespace xml
     next_expect (event_type, const std::string& ns, const std::string& name);
 
     event_type
-    peek ()
-    {
-      //@@ move to .ixx
-
-      if (state_ == state_peek)
-        return event_;
-      else
-      {
-        event_type e (next_ (true));
-        state_ = state_peek; // Set it after the call to next_().
-        return e;
-      }
-    }
+    peek ();
 
     // Return the even that was last returned by the call to next() or
     // peek().
@@ -304,28 +257,10 @@ namespace xml
     // Note that you cannot get/set content while peeking.
     //
     void
-    content (content_type c)
-    {
-      //@@ move to .ixx
-
-      assert (state_ == state_next);
-
-      if (!element_state_.empty () && element_state_.back ().depth == depth_)
-        element_state_.back ().content = c;
-      else
-        element_state_.push_back (element_entry (depth_, c));
-    }
+    content (content_type);
 
     content_type
-    content () const
-    {
-      assert (state_ == state_next);
-
-      return
-        !element_state_.empty () && element_state_.back ().depth == depth_
-        ? element_state_.back ().content
-        : mixed;
-    }
+    content () const;
 
     // Versions that also set the content. Event type must be start_element.
     //
