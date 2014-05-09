@@ -13,6 +13,7 @@
 
 #include <xml/details/genx/genx.h>
 
+#include <xml/forward.hxx>
 #include <xml/qname.hxx>
 #include <xml/exception.hxx>
 

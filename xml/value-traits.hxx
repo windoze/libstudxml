@@ -10,14 +10,12 @@
 #include <string>
 #include <cstddef> // std::size_t
 
+#include <xml/forward.hxx>
+
 #include <xml/details/export.hxx>
 
 namespace xml
 {
-  //@@ forward
-  class parser;
-  class serializer;
-
   template <typename T>
   struct default_value_traits
   {

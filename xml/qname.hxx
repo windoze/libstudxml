@@ -10,6 +10,8 @@
 #include <string>
 #include <iosfwd>
 
+#include <xml/forward.hxx>
+
 #include <xml/details/export.hxx>
 
 namespace xml

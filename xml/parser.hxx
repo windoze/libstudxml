@@ -27,6 +27,7 @@
 #  error UTF-16 expat (XML_UNICODE defined) is not supported
 #endif
 
+#include <xml/forward.hxx>
 #include <xml/qname.hxx>
 #include <xml/exception.hxx>
 
