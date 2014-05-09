@@ -46,7 +46,7 @@ namespace xml
     void
     init ();
 
-    private:
+  private:
     std::string name_;
     std::string description_;
     std::string what_;
@@ -186,7 +186,7 @@ namespace xml
     void
     namespace_decl (const std::string& ns, const std::string& prefix);
 
-    // XML Declaration. If encoding or standalone are not specified,
+    // XML declaration. If encoding or standalone are not specified,
     // then these attributes are omitted from the output.
     //
     void
