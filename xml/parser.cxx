@@ -96,6 +96,9 @@ namespace xml
     pqname_ = &qname_;
     pvalue_ = &value_;
 
+    line_ = 0;
+    column_ = 0;
+
     attr_i_ = 0;
     start_ns_i_ = 0;
     end_ns_i_ = 0;
@@ -671,6 +674,12 @@ namespace xml
           stream_exception_controller sec (is);
           is.read (b, static_cast<streamsize> (cap));
         }
+
+        // If the caller hasn't configured the stream to use exceptions,
+        // then use the parsing exception to report an error.
+        //
+        if (is.bad () || (is.fail () && !is.eof ()))
+          throw parsing (*this, "io failure");
 
         bool eof (is.eof ());
 
