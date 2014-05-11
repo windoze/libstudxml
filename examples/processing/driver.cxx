@@ -129,11 +129,6 @@ main (int argc, char* argv[])
 
     s.end_element (); // object
   }
-  catch (const ios_base::failure&)
-  {
-    cerr << "io failure" << endl;
-    return 1;
-  }
   // This handler will handle both parsing (xml::parsing) and serialization
   // (xml::serialization) exceptions.
   //
