@@ -1,4 +1,4 @@
-// file      : examples//performance/time.hxx
+// file      : examples/performance/time.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef TIME_HXX
