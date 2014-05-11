@@ -4,7 +4,7 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../build/bootstrap.make
 
-examples := roundtrip processing performance
+examples := roundtrip processing persistence performance
 
 default   := $(out_base)/
 test      := $(out_base)/.test
