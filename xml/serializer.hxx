@@ -58,11 +58,13 @@ namespace xml
     typedef xml::qname qname_type;
 
     // Serialize to std::ostream. Output name is used in diagnostics to
-    // identify the document being serialized. std::ios_base::failure
-    // exception is used to report io errors (badbit and failbit). The
-    // indentation argument specifies the number of indentation spaces
-    // that should be used for pretty-printing. If 0 is passed, no
-    // pretty-printing is performed.
+    // identify the document being serialized. The indentation argument
+    // specifies the number of indentation spaces that should be used for
+    // pretty-printing. If 0 is passed, no pretty-printing is performed.
+    //
+    // If stream exceptions are enabled then std::ios_base::failure
+    // exception is used to report io errors (badbit and failbit).
+    // Otherwise, those are reported as the serialization exception.
     //
     serializer (std::ostream&,
                 const std::string& output_name,
