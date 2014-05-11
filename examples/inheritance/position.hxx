@@ -13,13 +13,7 @@
 class position
 {
 public:
-  position (float lat = 0, float lon = 0): lat_ (lat), lon_ (lon) {}
-
-  float
-  lat () const {return lat_;}
-
-  float
-  lon () const {return lon_;}
+  // Constructors as well as accessor and modifiers not shown.
 
   // XML persistence.
   //
@@ -37,21 +31,9 @@ private:
 class object
 {
 public:
-  object (const std::string& name, unsigned int id): name_ (name), id_ (id) {}
-
-  const std::string&
-  name () const {return name_;}
-
-  unsigned int
-  id () const {return id_;}
-
   typedef std::vector<position> positions_type;
 
-  positions_type&
-  positions () {return positions_;}
-
-  const positions_type&
-  positions () const {return positions_;}
+  // Constructors as well as accessor and modifiers not shown.
 
   // XML persistence.
   //
@@ -80,10 +62,7 @@ private:
 class elevation
 {
 public:
-  elevation (float value = 0): value_ (value) {}
-
-  float
-  value () const {return value_;}
+  // Constructors as well as accessor and modifiers not shown.
 
   // XML persistence.
   //
@@ -100,21 +79,9 @@ private:
 class elevated_object: public object
 {
 public:
-  elevated_object (const std::string& name,
-                   const std::string& units,
-                   unsigned int id)
-      : object (name, id), units_ (units) {}
-
-  const std::string&
-  units () const {return units_;}
-
   typedef std::vector<elevation> elevations_type;
 
-  elevations_type&
-  elevations () {return elevations_;}
-
-  const elevations_type&
-  elevations () const {return elevations_;}
+  // Constructors as well as accessor and modifiers not shown.
 
   // XML persistence.
   //
@@ -145,17 +112,7 @@ public:
   typedef std::vector<object> simple_objects_type;
   typedef std::vector<elevated_object> elevated_objects_type;
 
-  simple_objects_type&
-  simple_objects () {return simple_objects_;}
-
-  const simple_objects_type&
-  simple_objects () const {return simple_objects_;}
-
-  elevated_objects_type&
-  elevated_objects () {return elevated_objects_;}
-
-  const elevated_objects_type&
-  elevated_objects () const {return elevated_objects_;}
+  // Constructors as well as accessor and modifiers not shown.
 
   // XML persistence.
   //
