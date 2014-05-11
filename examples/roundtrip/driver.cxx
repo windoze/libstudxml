@@ -22,6 +22,9 @@ main (int argc, char* argv[])
 
   try
   {
+    // Enable stream exceptions so that io failures are reported
+    // as stream rather than as parsing exceptions.
+    //
     ifstream ifs;
     ifs.exceptions (ifstream::badbit | ifstream::failbit);
     ifs.open (argv[1], ifstream::in | ifstream::binary);
