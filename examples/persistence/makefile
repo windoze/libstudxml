@@ -33,6 +33,7 @@ $(out_base)/: $(driver)
 $(dist): name := $(subst $(src_root)/examples/,,$(src_base))
 $(dist): sources := $(cxx_tun)
 $(dist): extras := README position.xml
+$(dist): export extra_sources := $(filter-out driver.cxx,$(cxx_tun))
 $(dist): export extra_headers := position.hxx
 $(dist): export extra_dist := $(extras) $(name)-vc9.vcproj \
 $(name)-vc10.vcxproj $(name)-vc10.vcxproj.filters \
