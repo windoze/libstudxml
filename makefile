@@ -4,7 +4,7 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))build/bootstrap.make
 
-dirs := xml tests examples
+dirs := xml tests examples doc
 
 default  := $(out_base)/
 test     := $(out_base)/.test
@@ -15,8 +15,8 @@ $(default): $(addprefix $(out_base)/,$(addsuffix /,$(dirs)))
 $(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(dirs)))
 
 $(dist): export dirs := $(dirs)
-$(dist): export docs := LICENSE NEWS README INSTALL version tester.bat
-$(dist): data_dist := libstudxml-vc9.sln libstudxml-vc10.sln \
+$(dist): export docs := LICENSE NEWS README INSTALL version
+$(dist): data_dist := tester.bat libstudxml-vc9.sln libstudxml-vc10.sln \
 libstudxml-vc11.sln libstudxml-vc12.sln
 $(dist): exec_dist := bootstrap tester.in
 $(dist): export extra_dist := $(data_dist) $(exec_dist)
