@@ -1,6 +1,7 @@
-libstudxml is a C++ XML library. It provides parsing and serialization
-APIs that were specifically designed for C++ and based on typical C++
-application needs when it comes to XML. For more information see:
+libstudxml is a streaming XML pull parser and streaming XML serializer
+implementation for modern, standard C++. It has an API that we believe
+should have already been in Boost or even in the C++ standard library.
+For more information see:
 
 http://www.codesynthesis.com/projects/libstudxml/
 
