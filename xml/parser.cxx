@@ -151,11 +151,11 @@ namespace xml
       switch (content ())
       {
       case content_type::empty:
-        throw parsing (*this, "character in empty content");
+        throw parsing (*this, "characters in empty content");
       case content_type::simple:
         throw parsing (*this, "element in simple content");
       case content_type::complex:
-        throw parsing (*this, "character in complex content");
+        throw parsing (*this, "characters in complex content");
       default:
         assert (false);
       }
