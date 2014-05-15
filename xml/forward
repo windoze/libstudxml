@@ -1,9 +1,9 @@
-// file      : xml/forward.hxx
+// file      : xml/forward -*- C++ -*-
 // copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 // license   : MIT; see accompanying LICENSE file
 
-#ifndef XML_FORWARD_HXX
-#define XML_FORWARD_HXX
+#ifndef XML_FORWARD
+#define XML_FORWARD
 
 #include <xml/details/pre.hxx>
 
@@ -16,4 +16,4 @@ namespace xml
 
 #include <xml/details/post.hxx>
 
-#endif // XML_FORWARD_HXX
+#endif // XML_FORWARD

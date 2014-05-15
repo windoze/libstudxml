@@ -1,9 +1,9 @@
-// file      : xml/parser.hxx
+// file      : xml/parser -*- C++ -*-
 // copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 // license   : MIT; see accompanying LICENSE file
 
-#ifndef XML_PARSER_HXX
-#define XML_PARSER_HXX
+#ifndef XML_PARSER
+#define XML_PARSER
 
 #include <xml/details/pre.hxx>
 
@@ -27,10 +27,10 @@
 #  error UTF-16 expat (XML_UNICODE defined) is not supported
 #endif
 
-#include <xml/forward.hxx>
-#include <xml/qname.hxx>
-#include <xml/content.hxx>
-#include <xml/exception.hxx>
+#include <xml/forward>
+#include <xml/qname>
+#include <xml/content>
+#include <xml/exception>
 
 #include <xml/details/export.hxx>
 
@@ -470,4 +470,4 @@ namespace xml
 
 #include <xml/details/post.hxx>
 
-#endif // XML_PARSER_HXX
+#endif // XML_PARSER

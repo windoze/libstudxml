@@ -11,7 +11,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <xml/serializer.hxx>
+#include <xml/serializer>
 
 using namespace std;
 using namespace xml;

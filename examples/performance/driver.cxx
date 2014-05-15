@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-#include <xml/parser.hxx>
+#include <xml/parser>
 
 #include "time.hxx"
 

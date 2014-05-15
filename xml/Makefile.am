@@ -20,5 +20,12 @@ endif
 libstudxml_la_SOURCES += __path__(genx_sources)
 nobase_studxmlinclude_HEADERS += __path__(genx_headers)
 
+nobase_studxmlinclude_HEADERS += __path__(xml_headers)
+
+# Make sure make doesn't try to build the no-extension headers
+# thinking that they are executable.
+#
+__foreach_w__(__f,__path__(xml_headers),__f $(top_srcdir)/xml/__f ): ; @:
+
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -DLIBSTUDXML_DYNAMIC_LIB
 AM_LDFLAGS = -release __value__(interface_version) -no-undefined

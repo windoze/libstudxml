@@ -1,8 +1,8 @@
 // file      : examples/hybrid/dom.cxx
 // copyright : not copyrighted - public domain
 
-#include <xml/parser.hxx>
-#include <xml/serializer.hxx>
+#include <xml/parser>
+#include <xml/serializer>
 
 #include "dom.hxx"
 

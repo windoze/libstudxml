@@ -1,9 +1,9 @@
-// file      : xml/content.hxx
+// file      : xml/content -*- C++ -*-
 // copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 // license   : MIT; see accompanying LICENSE file
 
-#ifndef XML_CONTENT_HXX
-#define XML_CONTENT_HXX
+#ifndef XML_CONTENT
+#define XML_CONTENT
 
 #include <xml/details/pre.hxx>
 
@@ -32,4 +32,4 @@ namespace xml
 
 #include <xml/details/post.hxx>
 
-#endif // XML_CONTENT_HXX
+#endif // XML_CONTENT

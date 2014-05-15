@@ -8,7 +8,7 @@
 #include <vector>
 #include <iosfwd>
 
-#include <xml/forward.hxx> // xml::{parser,serializer} forward declarations.
+#include <xml/forward> // xml::{parser,serializer} forward declarations.
 
 enum object_type {building, mountain};
 

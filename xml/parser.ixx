@@ -4,7 +4,7 @@
 
 #include <cassert>
 
-#include <xml/value-traits.hxx>
+#include <xml/value-traits>
 
 namespace xml
 {

@@ -5,6 +5,7 @@
 include $(dir $(lastword $(MAKEFILE_LIST)))../build/bootstrap.make
 
 sources := qname.cxx parser.cxx serializer.cxx value-traits.cxx
+xml_headers := content exception forward qname parser serializer value-traits
 
 # Expat.
 #
@@ -72,6 +73,12 @@ $(out_base)/: $(studxml.l)
 
 # Dist.
 #
+
+# Set it for the out_root so that it is visible in examples/tests. See
+# Makefile.am for why we need it there.
+#
+$(our_root)/%.dist: export xml_headers := $(xml_headers) 
+
 $(dist): export sources := $(sources)
 $(dist): export expat_sources := $(expat_sources)
 $(dist): export expat_headers := $(expat_headers)
@@ -89,7 +96,7 @@ $(dist): export interface_version = $(shell sed -e \
 
 $(dist):
 	$(call dist-data,$(sources) $(expat_sources) $(genx_sources))
-	$(call dist-data,$(headers) $(expat_headers) $(genx_headers))
+	$(call dist-data,$(headers) $(xml_headers) $(expat_headers) $(genx_headers))
 	$(call dist-data,$(data_dist) details/config.h.in)
 	$(call meta-vc9proj,libstudxml-vc9.vcproj)
 	$(call meta-vc10proj,libstudxml-vc10.vcxproj)

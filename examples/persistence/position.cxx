@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-#include <xml/parser.hxx>
-#include <xml/serializer.hxx>
+#include <xml/parser>
+#include <xml/serializer>
 
 #include "position.hxx"
 

@@ -7,8 +7,8 @@
 #include <cassert>
 #include <iostream>
 
-#include <xml/parser.hxx>
-#include <xml/serializer.hxx>
+#include <xml/parser>
+#include <xml/serializer>
 
 using namespace std;
 using namespace xml;

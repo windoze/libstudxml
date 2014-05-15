@@ -1,16 +1,16 @@
-// file      : xml/qname.hxx
+// file      : xml/qname -*- C++ -*-
 // copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 // license   : MIT; see accompanying LICENSE file
 
-#ifndef XML_QNAME_HXX
-#define XML_QNAME_HXX
+#ifndef XML_QNAME
+#define XML_QNAME
 
 #include <xml/details/pre.hxx>
 
 #include <string>
 #include <iosfwd>
 
-#include <xml/forward.hxx>
+#include <xml/forward>
 
 #include <xml/details/export.hxx>
 
@@ -84,4 +84,4 @@ namespace xml
 
 #include <xml/details/post.hxx>
 
-#endif // XML_QNAME_HXX
+#endif // XML_QNAME

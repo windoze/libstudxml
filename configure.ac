@@ -6,7 +6,7 @@ AC_PREREQ(2.60)
 AC_INIT([libstudxml], [__value__(version)], [studxml-users@codesynthesis.com])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([xml/exception.hxx])
+AC_CONFIG_SRCDIR([xml/exception])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign nostdinc subdir-objects dist-bzip2 dist-zip tar-ustar])
 m4_equote()[m4_ifdef]m4_dquote()([AM_PROG_AR], [AM_PROG_AR]) # Required by automake 1.12.

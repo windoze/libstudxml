@@ -5,9 +5,9 @@
 #include <fstream>
 #include <iostream>
 
-#include <xml/parser.hxx>
-#include <xml/serializer.hxx>
-#include <xml/value-traits.hxx>
+#include <xml/parser>
+#include <xml/serializer>
+#include <xml/value-traits>
 
 using namespace std;
 using namespace xml;

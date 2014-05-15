@@ -1,16 +1,16 @@
-// file      : xml/value-traits.hxx
+// file      : xml/value-traits -*- C++ -*-
 // copyright : Copyright (c) 2013-2014 Code Synthesis Tools CC
 // license   : MIT; see accompanying LICENSE file
 
-#ifndef XML_VALUE_TRAITS_HXX
-#define XML_VALUE_TRAITS_HXX
+#ifndef XML_VALUE_TRAITS
+#define XML_VALUE_TRAITS
 
 #include <xml/details/pre.hxx>
 
 #include <string>
 #include <cstddef> // std::size_t
 
-#include <xml/forward.hxx>
+#include <xml/forward>
 
 #include <xml/details/export.hxx>
 
@@ -50,4 +50,4 @@ namespace xml
 
 #include <xml/details/post.hxx>
 
-#endif // XML_VALUE_TRAITS_HXX
+#endif // XML_VALUE_TRAITS

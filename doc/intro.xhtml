@@ -278,7 +278,7 @@
      and US-ASCII input encodings.</p>
 
   <pre class="c++">
-#include &lt;xml/parser.hxx>
+#include &lt;xml/parser>
 
 namespace xml
 {
@@ -287,7 +287,7 @@ namespace xml
   </pre>
 
   <pre class="c++">
-#include &lt;xml/serializer.hxx>
+#include &lt;xml/serializer>
 
 namespace xml
 {
@@ -595,7 +595,7 @@ for (parser::event_type e: p)
      class to represent such names:</p>
 
   <pre class="c++">
-#include &lt;xml/qname.hxx>
+#include &lt;xml/qname>
 
 namespace xml
 {
@@ -993,6 +993,8 @@ cerr &lt;&lt; p.next () &lt;&lt; endl;
      the table:</p>
 
   <pre class="c++">
+#include &lt;xml/content>
+
 namespace xml
 {
   enum class content

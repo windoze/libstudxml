@@ -4,8 +4,8 @@
 
 #include <sstream>
 
-#include <xml/parser.hxx>
-#include <xml/serializer.hxx>
+#include <xml/parser>
+#include <xml/serializer>
 
 namespace xml
 {
