@@ -13,7 +13,9 @@ See the INSTALL file for prerequisites and installation instructions.
 
 See the doc/ directory for the API documentation.
 
-See the examples/ directory for examples.
+See the examples/ directory for examples. See examples/README for an
+overview of the provided examples as well as the README file in each
+example directory for more details on any particular example.
 
 See the tests/ directory for the test suite.
 
