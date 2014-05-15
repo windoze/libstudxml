@@ -14,10 +14,12 @@ clean     := $(out_base)/.clean
 $(default): $(addprefix $(out_base)/,$(addsuffix /,$(examples)))
 $(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(examples)))
 
+$(dist): extras := README
 $(dist): export dirs := $(examples)
-$(dist): export extra_dist := test.bat examples-vc9.sln examples-vc10.sln \
-examples-vc11.sln examples-vc12.sln
+$(dist): export extra_dist := $(extras) test.bat examples-vc9.sln \
+examples-vc10.sln examples-vc11.sln examples-vc12.sln
 $(dist): $(addprefix $(out_base)/,$(addsuffix /.dist,$(examples)))
+	$(call dist-data,$(extras))
 	$(call meta-automake)
 	$(call meta-vc9sln,examples-vc9.sln)
 	$(call meta-vc10sln,examples-vc10.sln)
@@ -27,6 +29,7 @@ $(dist): $(addprefix $(out_base)/,$(addsuffix /.dist,$(examples)))
 
 $(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(examples)))
 
+$(call include,$(bld_root)/dist.make)
 $(call include,$(bld_root)/meta/vc9sln.make)
 $(call include,$(bld_root)/meta/vc10sln.make)
 $(call include,$(bld_root)/meta/vc11sln.make)
