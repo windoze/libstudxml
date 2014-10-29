@@ -470,4 +470,16 @@ main ()
     assert (v[3] == parser::end_element);
     assert (v[4] == parser::end_element);
   }
+
+  // Test space extraction into the std::string value.
+  //
+  {
+    istringstream is ("<root a=' a '> b </root>");
+    parser p (is, "test");
+    p.next_expect (parser::start_element, "root");
+    assert (p.attribute<std::string> ("a") == " a ");
+    p.next_expect (parser::characters);
+    assert (p.value<std::string> () == " b ");
+    p.next_expect (parser::end_element);
+  }
 }
