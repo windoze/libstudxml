@@ -642,7 +642,9 @@ namespace xml
     // Get and parse the next chunk of data until we get the next event
     // or reach eof.
     //
-    event_ = eof;
+    if (!accumulate_)
+      event_ = eof;
+
     XML_Status s;
     do
     {
