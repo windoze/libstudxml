@@ -2143,6 +2143,58 @@ genxStatus genxXmlDeclaration(genxWriter w,
   return GENX_SUCCESS;
 }
 
+genxStatus genxDoctypeDeclaration(genxWriter w,
+                                  constUtf8 re,
+                                  constUtf8 pi,
+                                  constUtf8 si,
+                                  constUtf8 is)
+{
+  if (w->sequence != SEQUENCE_PRE_DOC)
+    return w->status = GENX_SEQUENCE_ERROR;
+
+  if ((w->status = genxCheckText(w, re)) != GENX_SUCCESS)
+    return w->status;
+
+  if (pi != NULL && (w->status = genxCheckText(w, pi)) != GENX_SUCCESS)
+    return w->status;
+
+  if (si != NULL && (w->status = genxCheckText(w, si)) != GENX_SUCCESS)
+    return w->status;
+
+  if (is != NULL && (w->status = genxCheckText(w, is)) != GENX_SUCCESS)
+    return w->status;
+
+  SendCheck (w, "<!DOCTYPE ");
+  SendCheck (w, re);
+
+  if (pi != NULL)
+  {
+    SendCheck (w, " PUBLIC\n  \"");
+    SendCheck (w, pi);
+    SendCheck (w, "\"");
+  }
+
+  if (si != NULL)
+  {
+    if (pi == NULL)
+      SendCheck (w, " SYSTEM");
+
+    SendCheck (w, "\n  \"");
+    SendCheck (w, si);
+    SendCheck (w, "\"");
+  }
+
+  if (is != NULL)
+  {
+    SendCheck (w, " [\n");
+    SendCheck (w, is);
+    SendCheck (w, "\n]");
+  }
+
+  SendCheck (w, ">\n");
+  return GENX_SUCCESS;
+}
+
 genxStatus genxComment(genxWriter w, constUtf8 text)
 {
   size_t i;

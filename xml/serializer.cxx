@@ -241,6 +241,21 @@ namespace xml
       handle_error (e);
   }
 
+  void serializer::
+  doctype_decl (const string& re,
+                const string& pi,
+                const string& si,
+                const string& is)
+  {
+    if (genxStatus e = genxDoctypeDeclaration (
+          s_,
+          reinterpret_cast<constUtf8> (re.c_str ()),
+          (pi.empty () ? 0 : reinterpret_cast<constUtf8> (pi.c_str ())),
+          (si.empty () ? 0 : reinterpret_cast<constUtf8> (si.c_str ())),
+          (is.empty () ? 0 : reinterpret_cast<constUtf8> (is.c_str ()))))
+      handle_error (e);
+  }
+
   bool serializer::
   lookup_namespace_prefix (const string& ns, string& p)
   {

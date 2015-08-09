@@ -196,6 +196,15 @@ namespace xml
               const std::string& encoding = "UTF-8",
               const std::string& standalone = "");
 
+    // DOCTYPE declaration. If encoding or standalone are not specified,
+    // then these attributes are omitted from the output.
+    //
+    void
+    doctype_decl (const std::string& root_element,
+                  const std::string& public_id = "",
+                  const std::string& system_id = "",
+                  const std::string& internal_subset = "");
+
     // Utility functions.
     //
   public:

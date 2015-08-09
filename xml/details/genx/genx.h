@@ -205,6 +205,19 @@ genxStatus genxXmlDeclaration(genxWriter w,
                               constUtf8 encoding,
                               constUtf8 standalone);
 /*
+ * Write DOCTYPE declaration. If public_id is not NULL, then this is
+ * a PUBLIC DOCTYPE declaration, otherwise, if system_id is not NULL,
+ * then this is a SYSTEM DOCTYPE. If both are NULL, then a DOCTYPE
+ * that only contains the root element and, if not NULL, internal
+ * subset is written.
+ */
+genxStatus genxDoctypeDeclaration(genxWriter w,
+                                  constUtf8 root_element,
+                                  constUtf8 public_id,
+                                  constUtf8 system_id,
+                                  constUtf8 internal_subset);
+
+/*
  * Write a comment
  */
 genxStatus genxComment(genxWriter w, constUtf8 text);
