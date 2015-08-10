@@ -118,4 +118,59 @@ namespace xml
   {
     characters (value_traits<T>::serialize (value, *this));
   }
+
+  // operator<<
+  //
+
+  inline serializer&
+  operator<< (serializer& s, void (*func) (serializer&))
+  {
+    func (s);
+    return s;
+  }
+
+  namespace details
+  {
+    // Detect whether T defines void operator(A) const.
+    //
+    template <typename T, typename A>
+    struct is_functor
+    {
+      typedef char no[1];
+      typedef char yes[2];
+
+      template <typename X, X> struct check;
+
+      template <typename>
+      static no& test (...);
+
+      template <typename X>
+      static yes& test (check<void (X::*) (A) const, &X::operator ()>*);
+
+      static const bool value = sizeof (test<T> (0)) == sizeof (yes);
+    };
+
+    template <typename T, bool = is_functor<T, serializer&>::value>
+    struct inserter;
+
+    template <typename T>
+    struct inserter<T, true>
+    {
+      static void insert (serializer& s, const T& f) {f (s);}
+    };
+
+    template <typename T>
+    struct inserter<T, false>
+    {
+      static void insert (serializer& s, const T& v) {s.characters (v);}
+    };
+  }
+
+  template <typename T>
+  inline serializer&
+  operator<< (serializer& s, const T& value)
+  {
+    details::inserter<T>::insert (s, value);
+    return s;
+  }
 }

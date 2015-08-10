@@ -4,7 +4,8 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../build/bootstrap.make
 
-examples := roundtrip processing persistence inheritance hybrid performance
+examples := roundtrip processing persistence inheritance hybrid performance \
+xhtml
 
 default   := $(out_base)/
 test      := $(out_base)/.test

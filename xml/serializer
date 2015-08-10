@@ -185,6 +185,8 @@ namespace xml
     // namespace is declared. If both prefix and namespace are empty,
     // then the default namespace declaration is cleared (xmlns="").
     //
+    // This function should be called after start_element().
+    //
     void
     namespace_decl (const std::string& ns, const std::string& prefix);
 
@@ -251,6 +253,20 @@ namespace xml
     genxSender sender_;
     std::size_t depth_;
   };
+
+  // Stream-like interface for serializer. If the passed argument
+  // is a function with the void f(serializer&) signature or is a
+  // function object with the void operator() (serializer&) const
+  // operator, then this function (object) is called with the passed
+  // serializer. Otherwise, the argument is passed to the serializer's
+  // characters() function.
+  //
+  serializer&
+  operator<< (serializer&, void (*func) (serializer&));
+
+  template <typename T>
+  serializer&
+  operator<< (serializer&, const T& value);
 }
 
 #include <xml/serializer.ixx>
