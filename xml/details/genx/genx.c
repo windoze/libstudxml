@@ -131,6 +131,7 @@ struct genxWriter_rec
   /* Pretty-printing state */
   int                      ppIndent;
   int                      ppDepth;
+  int                      ppSuspendDepth; /* Non-0 means we are suspended. */
   Boolean                  ppSimple;
 
   /* Canonicalization. */
@@ -693,6 +694,62 @@ int genxGetPrettyPrint(genxWriter w)
 }
 
 /*
+ * Suspend/resume pretty-printing.
+ */
+genxStatus genxSuspendPrettyPrint(genxWriter w)
+{
+  int d = w->ppDepth;
+
+  if (w->ppIndent == 0)
+    return w->status = GENX_SEQUENCE_ERROR;
+
+  switch (w->sequence)
+  {
+  case SEQUENCE_START_TAG:
+  case SEQUENCE_ATTRIBUTES:
+    d++; /* No start tag written, still outer depth. */
+  case SEQUENCE_CONTENT:
+    break;
+  default:
+    return w->status = GENX_SEQUENCE_ERROR;
+  }
+
+  if (w->ppSuspendDepth == 0) /* Ignore nested suspend/resume calls. */
+    w->ppSuspendDepth = d;
+
+  return w->status;
+}
+
+genxStatus genxResumePrettyPrint(genxWriter w)
+{
+  int d = w->ppDepth;
+
+  if (w->ppIndent == 0 || w->ppSuspendDepth == 0)
+    return w->status = GENX_SEQUENCE_ERROR;
+
+  switch (w->sequence)
+  {
+  case SEQUENCE_START_TAG:
+  case SEQUENCE_ATTRIBUTES:
+    d++; /* No start tag written, still outer depth. */
+  case SEQUENCE_CONTENT:
+    break;
+  default:
+    return w->status = GENX_SEQUENCE_ERROR;
+  }
+
+  if (w->ppSuspendDepth == d) /* Ignore nested suspend/resume calls. */
+    w->ppSuspendDepth = 0;
+
+  return w->status;
+}
+
+int genxPrettyPrintSuspended(genxWriter w)
+{
+  return w->ppSuspendDepth;
+}
+
+/*
  * get/set canonicalization.
  */
 genxStatus genxSetCanonical(genxWriter w, int flag)
@@ -1217,8 +1274,9 @@ genxStatus genxStartDocSender(genxWriter w, genxSender * sender)
 
   if (w->ppIndent)
   {
-    w->ppSimple = True;
     w->ppDepth = 0;
+    w->ppSuspendDepth = 0;
+    w->ppSimple = True;
   }
 
   return GENX_SUCCESS;
@@ -1292,7 +1350,9 @@ static genxStatus writeStartTag(genxWriter w, Boolean close)
 
   if (w->ppIndent)
   {
-    if (w->ppDepth)
+    if (w->ppDepth &&
+        /* Suspend depth could be at this element's depth (after ++ below). */
+        (w->ppSuspendDepth == 0 || w->ppSuspendDepth > w->ppDepth))
       if (writeIndentation (w) != GENX_SUCCESS)
         return w->status;
 
@@ -1300,6 +1360,15 @@ static genxStatus writeStartTag(genxWriter w, Boolean close)
     {
       w->ppDepth++;
       w->ppSimple = True;
+    }
+    else
+    {
+      /*
+       * Conceptually we incremented/decremented the depth, so check if we
+       * need to resume pretty-printing.
+       */
+      if (w->ppSuspendDepth > w->ppDepth)
+        w->ppSuspendDepth = 0;
     }
   }
 
@@ -1789,9 +1858,12 @@ genxStatus genxEndElement(genxWriter w)
     {
       w->ppDepth--;
 
-      if (!w->ppSimple)
+      if (!w->ppSimple && w->ppSuspendDepth == 0)
         if (writeIndentation (w) != GENX_SUCCESS)
           return w->status;
+
+      if (w->ppSuspendDepth > w->ppDepth)
+        w->ppSuspendDepth = 0; /* Resume pretty-printing. */
     }
 
     SendCheck(w, "</");
@@ -1804,7 +1876,11 @@ genxStatus genxEndElement(genxWriter w)
     SendCheck(w, ">");
   }
 
-  if (w->ppIndent)
+  /* If this element is written while pretty-printing is suspended,
+     treat it as simple. As an example, think of an XHTML <b> element
+     for which we suspend pretty-printing before writing the opening
+     tag and resume it after the closing one. */
+  if (w->ppIndent && w->ppSuspendDepth == 0)
     w->ppSimple = False;
 
   /*

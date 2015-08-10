@@ -118,6 +118,24 @@ genxStatus genxSetPrettyPrint(genxWriter w, int indentation);
 int genxGetPrettyPrint(genxWriter w);
 
 /*
+ * Suspend/resume pretty-printing. Pretty-printing can be suspended
+ * only inside an element and, unless explicitly resumed, it will
+ * remain suspended until the end of that element. You should only
+ * explicitly resume pretty-printing at the element nesting level
+ * of suspension. If pretty-printing is already suspended at an
+ * outer nesting level, then subsequent calls to suspend/resume
+ * are ignored. The PrettyPrintSuspended() function can be used
+ * to check if pretty-printing is currently suspended. If it is
+ * not, then this function returns 0. Otherwise, it returns the
+ * level at which pretty-printing was suspended, with root element
+ * being level 1.
+ */
+genxStatus genxSuspendPrettyPrint(genxWriter w);
+genxStatus genxResumePrettyPrint(genxWriter w);
+int genxPrettyPrintSuspended(genxWriter w);
+
+
+/*
  * Set/get canonicalization. If true, then output explicit closing
  * tags and sort attributes. Default is false.
  */

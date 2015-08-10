@@ -214,6 +214,30 @@ namespace xml
     bool
     lookup_namespace_prefix (const std::string& ns, std::string& prefix);
 
+    // Suspend/resume indentation.
+    //
+  public:
+
+    // Indentation can be suspended only inside an element and, unless
+    // explicitly resumed, it will remain suspended until the end of
+    // that element. You should only explicitly resume indentation at
+    // the element nesting level of suspension. If indentation is already
+    // suspended at an outer nesting level, then subsequent calls to
+    // suspend/resume are ignored. The indentation_suspended() function
+    // can be used to check if indentation is currently suspended. If it
+    // is not, then this function returns 0. Otherwise, it returns the
+    // level at which pretty-printing was suspended, with root element
+    // being level 1.
+    //
+    void
+    suspend_indentation ();
+
+    void
+    resume_indentation ();
+
+    std::size_t
+    indentation_suspended () const;
+
   private:
     void
     handle_error (genxStatus);

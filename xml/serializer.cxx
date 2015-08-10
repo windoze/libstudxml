@@ -273,4 +273,24 @@ namespace xml
     p = reinterpret_cast<const char*> (genxGetNamespacePrefix (gns));
     return true;
   }
+
+  void serializer::
+  suspend_indentation ()
+  {
+    if (genxStatus e = genxSuspendPrettyPrint (s_))
+      handle_error (e);
+  }
+
+  void serializer::
+  resume_indentation ()
+  {
+    if (genxStatus e = genxResumePrettyPrint (s_))
+      handle_error (e);
+  }
+
+  size_t serializer::
+  indentation_suspended () const
+  {
+    return static_cast<size_t> (genxPrettyPrintSuspended (s_));
+  }
 }
