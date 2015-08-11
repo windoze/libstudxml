@@ -122,7 +122,7 @@ namespace xml
   }
 
   void serializer::
-  handle_error (genxStatus e)
+  handle_error (genxStatus e) const
   {
     switch (e)
     {
@@ -287,7 +287,7 @@ namespace xml
   }
 
   bool serializer::
-  lookup_namespace_prefix (const string& ns, string& p)
+  lookup_namespace_prefix (const string& ns, string& p) const
   {
     // Currently Genx will create a namespace mapping if one doesn't
     // already exist.
@@ -302,6 +302,28 @@ namespace xml
 
     p = reinterpret_cast<const char*> (genxGetNamespacePrefix (gns));
     return true;
+  }
+
+  qname serializer::
+  current_element () const
+  {
+    constUtf8 ns, n;
+    if (genxStatus e = genxGetCurrentElement (s_, &ns, &n))
+      handle_error (e);
+
+    return qname (ns != 0 ? reinterpret_cast<const char*> (ns) : "",
+                  reinterpret_cast<const char*> (n));
+  }
+
+  qname serializer::
+  current_attribute () const
+  {
+    constUtf8 ns, n;
+    if (genxStatus e = genxGetCurrentAttribute (s_, &ns, &n))
+      handle_error (e);
+
+    return qname (ns != 0 ? reinterpret_cast<const char*> (ns) : "",
+                  reinterpret_cast<const char*> (n));
   }
 
   void serializer::

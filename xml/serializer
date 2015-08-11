@@ -240,7 +240,19 @@ namespace xml
     // the mapped prefix.
     //
     bool
-    lookup_namespace_prefix (const std::string& ns, std::string& prefix);
+    lookup_namespace_prefix (const std::string& ns, std::string& prefix) const;
+
+    // Return the current element, that is, the latest element for which
+    // start_element() but not end_element() have been called.
+    //
+    qname
+    current_element () const;
+
+    // Return the current attribute, that is, the latest attribute for
+    // which start_attribute() but not end_attribute() have been called.
+    //
+    qname
+    current_attribute () const;
 
     // Suspend/resume indentation.
     //
@@ -268,7 +280,7 @@ namespace xml
 
   private:
     void
-    handle_error (genxStatus);
+    handle_error (genxStatus) const;
 
   private:
     std::ostream& os_;
