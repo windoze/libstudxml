@@ -19,6 +19,18 @@ namespace xml
   }
 
   inline void serializer::
+  end_element (const qname_type& qname)
+  {
+    end_element (qname.namespace_ (), qname.name ());
+  }
+
+  inline void serializer::
+  end_element (const std::string& name)
+  {
+    end_element (std::string (), name);
+  }
+
+  inline void serializer::
   element (const std::string& v)
   {
     if (!v.empty ())
@@ -77,6 +89,18 @@ namespace xml
   start_attribute (const std::string& name)
   {
     start_attribute (std::string (), name);
+  }
+
+  inline void serializer::
+  end_attribute (const qname_type& qname)
+  {
+    end_attribute (qname.namespace_ (), qname.name ());
+  }
+
+  inline void serializer::
+  end_attribute (const std::string& name)
+  {
+    end_attribute (std::string (), name);
   }
 
   inline void serializer::

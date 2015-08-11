@@ -173,6 +173,21 @@ namespace xml
   }
 
   void serializer::
+  end_element (const string& ns, const string& name)
+  {
+    constUtf8 cns, cn;
+    genxStatus e;
+    if ((e = genxGetCurrentElement (s_, &cns, &cn)) ||
+        reinterpret_cast<const char*> (cn) != name ||
+        (cns == 0 ? !ns.empty () : reinterpret_cast<const char*> (cns) != ns))
+    {
+      handle_error (e != GENX_SUCCESS ? e : GENX_SEQUENCE_ERROR);
+    }
+
+    end_element ();
+  }
+
+  void serializer::
   element (const string& ns, const string& n, const string& v)
   {
     start_element (ns, n);
@@ -194,6 +209,21 @@ namespace xml
   {
     if (genxStatus e = genxEndAttribute (s_))
       handle_error (e);
+  }
+
+  void serializer::
+  end_attribute (const string& ns, const string& name)
+  {
+    constUtf8 cns, cn;
+    genxStatus e;
+    if ((e = genxGetCurrentAttribute (s_, &cns, &cn)) ||
+        reinterpret_cast<const char*> (cn) != name ||
+        (cns == 0 ? !ns.empty () : reinterpret_cast<const char*> (cns) != ns))
+    {
+      handle_error (e != GENX_SUCCESS ? e : GENX_SEQUENCE_ERROR);
+    }
+
+    end_attribute ();
   }
 
   void serializer::

@@ -20,7 +20,7 @@ namespace xhtml
     s.start_element (xmlns, "html");
     s.namespace_decl (xmlns, "");
   }
-  inline void html_ (serializer& s) {s.end_element ();}
+  inline void html_ (serializer& s) {s.end_element (xmlns, "html");}
 
   inline void _head (serializer& s)
   {
@@ -29,16 +29,16 @@ namespace xhtml
     s.attribute ("charset", "UTF-8");
     s.end_element ();
   }
-  inline void head_ (serializer& s) {s.end_element ();}
+  inline void head_ (serializer& s) {s.end_element (xmlns, "head");}
 
   inline void _title (serializer& s) {s.start_element (xmlns, "title");}
-  inline void title_ (serializer& s) {s.end_element ();}
+  inline void title_ (serializer& s) {s.end_element (xmlns, "title");}
 
   inline void _body (serializer& s) {s.start_element (xmlns, "body");}
-  inline void body_ (serializer& s) {s.end_element ();}
+  inline void body_ (serializer& s) {s.end_element (xmlns, "body");}
 
   inline void _p (serializer& s) {s.start_element (xmlns, "p");}
-  inline void p_ (serializer& s) {s.end_element ();}
+  inline void p_ (serializer& s) {s.end_element (xmlns, "p");}
 
   // "Inline" elements, i.e., those that are written without
   // indentation.
@@ -50,7 +50,7 @@ namespace xhtml
   }
   inline void em_ (serializer& s)
   {
-    s.end_element ();
+    s.end_element (xmlns, "em");
     s.resume_indentation ();
   }
 

@@ -80,7 +80,7 @@ struct genxNamespace_rec
 struct genxElement_rec
 {
   genxWriter 	writer;
-  utf8       	type;
+  utf8       	name;
   genxNamespace ns;
 };
 
@@ -317,7 +317,7 @@ static genxNamespace findNamespace(plist * pl, constUtf8 uri)
   return NULL;
 }
 
-static genxElement findElement(plist * pl, constUtf8 xmlns, constUtf8 type)
+static genxElement findElement(plist * pl, constUtf8 xmlns, constUtf8 name)
 {
   size_t i;
   genxElement * ee = (genxElement *) pl->pointers;
@@ -326,15 +326,15 @@ static genxElement findElement(plist * pl, constUtf8 xmlns, constUtf8 type)
   {
     if (xmlns == NULL)
     {
-      if (ee[i]->ns == NULL && strcmp((const char *) type,
-				      (const char *) ee[i]->type) == 0)
+      if (ee[i]->ns == NULL && strcmp((const char *) name,
+				      (const char *) ee[i]->name) == 0)
 	return ee[i];
     }
     else
     {
       if (ee[i]->ns != NULL &&
 	  strcmp((const char *) xmlns, (const char *) ee[i]->ns->name) == 0 &&
-	  strcmp((const char *) type, (const char *) ee[i]->type) == 0)
+	  strcmp((const char *) name, (const char *) ee[i]->name) == 0)
 	return ee[i];
     }
   }
@@ -809,7 +809,7 @@ void genxDispose(genxWriter w)
 
   for (i = 0; i < w->elements.count; i++)
   {
-    deallocate(w, ee[i]->type);
+    deallocate(w, ee[i]->name);
     deallocate(w, ee[i]);
   }
 
@@ -1066,20 +1066,20 @@ utf8 genxGetNamespacePrefix(genxNamespace ns)
  * DeclareElement - see genx.h for details
  */
 genxElement genxDeclareElement(genxWriter w,
-			       genxNamespace ns, constUtf8 type,
+			       genxNamespace ns, constUtf8 name,
 			       genxStatus * statusP)
 {
   genxElement old;
   genxElement el;
 
-  if ((w->status = checkNCName(w, type)) != GENX_SUCCESS)
+  if ((w->status = checkNCName(w, name)) != GENX_SUCCESS)
   {
     *statusP = w->status;
     return NULL;
   }
 
   /* already declared? */
-  old = findElement(&w->elements, (ns == NULL) ? NULL : ns->name, type);
+  old = findElement(&w->elements, (ns == NULL) ? NULL : ns->name, name);
   if (old)
     return old;
 
@@ -1091,7 +1091,7 @@ genxElement genxDeclareElement(genxWriter w,
 
   el->writer = w;
   el->ns = ns;
-  if ((el->type = copy(w, type)) == NULL)
+  if ((el->name = copy(w, name)) == NULL)
   {
     w->status = *statusP = GENX_ALLOC_FAILED;
     return NULL;
@@ -1378,7 +1378,7 @@ static genxStatus writeStartTag(genxWriter w, Boolean close)
     SendCheck(w, e->ns->declaration->name + STRLEN_XMLNS_COLON);
     SendCheck(w, ":");
   }
-  SendCheck(w, e->type);
+  SendCheck(w, e->name);
 
   /* If we are canonicalizing, then write sorted attributes. Otherwise
      write them in the order specified. */
@@ -1780,6 +1780,22 @@ genxStatus genxStartAttribute(genxAttribute a)
   return GENX_SUCCESS;
 }
 
+genxStatus genxGetCurrentAttribute (genxWriter w,
+                                    constUtf8* xmlns, constUtf8* name)
+{
+  genxAttribute a;
+
+  if (w->sequence != SEQUENCE_START_ATTR)
+    return w->status = GENX_SEQUENCE_ERROR;
+
+  a = w->nowStartingAttr;
+
+  *xmlns = a->ns ? a->ns->name : NULL;
+  *name = a->name;
+
+  return GENX_SUCCESS;
+}
+
 genxStatus genxEndAttribute(genxWriter w)
 {
   genxAttribute a;
@@ -1809,6 +1825,36 @@ genxStatus genxEndAttribute(genxWriter w)
     else
       w->lastAttribute = w->firstAttribute = a;
   }
+
+  return GENX_SUCCESS;
+}
+
+genxStatus genxGetCurrentElement (genxWriter w,
+                                  constUtf8* xmlns, constUtf8* name)
+{
+  int i;
+  genxElement e;
+
+  switch (w->sequence)
+  {
+  case SEQUENCE_START_TAG:
+  case SEQUENCE_ATTRIBUTES:
+    e = w->nowStarting;
+    break;
+  case SEQUENCE_CONTENT:
+    /* Find the element. The same code as in EndElement() below. */
+    for (i = (int) (w->stack.count) - 1;
+         w->stack.pointers[i] != NULL;
+         i -= 2)
+      ;
+    e = (genxElement) w->stack.pointers[--i];
+    break;
+  default:
+    return w->status = GENX_SEQUENCE_ERROR;
+  }
+
+  *xmlns = e->ns ? e->ns->name : NULL;
+  *name = e->name;
 
   return GENX_SUCCESS;
 }
@@ -1872,7 +1918,7 @@ genxStatus genxEndElement(genxWriter w)
       SendCheck(w, e->ns->declaration->name + STRLEN_XMLNS_COLON);
       SendCheck(w, ":");
     }
-    SendCheck(w, e->type);
+    SendCheck(w, e->name);
     SendCheck(w, ">");
   }
 
@@ -2379,7 +2425,7 @@ genxStatus genxPI(genxWriter w, constUtf8 target, constUtf8 text)
  * Literal versions of the writing routines
  */
 genxStatus genxStartElementLiteral(genxWriter w,
-				   constUtf8 xmlns, constUtf8 type)
+				   constUtf8 xmlns, constUtf8 name)
 {
   genxNamespace ns = NULL;
   genxElement e;
@@ -2390,7 +2436,7 @@ genxStatus genxStartElementLiteral(genxWriter w,
     if (ns == NULL || w->status != GENX_SUCCESS)
       return w->status;
   }
-  e = genxDeclareElement(w, ns, type, &w->status);
+  e = genxDeclareElement(w, ns, name, &w->status);
   if (e == NULL || w->status != GENX_SUCCESS)
     return w->status;
 

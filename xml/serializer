@@ -97,6 +97,19 @@ namespace xml
     void
     end_element ();
 
+    // "Checked" end element. That is, it checks that the element
+    // you think you are ending matches the current one.
+    //
+    void
+    end_element (const qname_type& qname);
+
+    void
+    end_element (const std::string& name);
+
+    void
+    end_element (const std::string& ns, const std::string& name);
+
+
     // Helpers for serializing elements with simple content. The first two
     // functions assume that start_element() has already been called. The
     // other two serialize the complete element, from start to end.
@@ -146,6 +159,19 @@ namespace xml
 
     void
     end_attribute ();
+
+    // "Checked" end attribute. That is, it checks that the attribute
+    // you think you are ending matches the current one.
+    //
+    void
+    end_attribute (const qname_type& qname);
+
+    void
+    end_attribute (const std::string& name);
+
+    void
+    end_attribute (const std::string& ns, const std::string& name);
+
 
     void
     attribute (const qname_type& qname, const std::string& value);
